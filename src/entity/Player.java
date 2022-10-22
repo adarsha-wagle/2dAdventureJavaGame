@@ -9,20 +9,33 @@ import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 public class Player extends Entity{
+
+/*
+player is in center of the screen and background is moving
+ */
+    //screenX and screenY does not change throughout the game
+    public final  int screenX;
+    public final int screenY;
     GamePanel gamePanel;
     KeyHandler keyH;
     public Player(GamePanel gP,KeyHandler keyH){
+
         this.gamePanel = gP;
         this.keyH = keyH;
+        screenX = gamePanel.SCREEN_WIDTH/2-(gamePanel.TILE_SIZE/2);//768/2-24 = 360pixel
+        screenY = gamePanel.SCREEN_HEIGHT/2-(gamePanel.TILE_SIZE/2);//576/2-24 = 264pixel
+
+        solidArea = new Rectangle(8,16,32,30);
         setDefaultValues();
         getPlayerImage();
     }
     public void setDefaultValues()
     {
-        playerX = 100;
-        playerY = 100;
+        //player position in world map
+        worldX = gamePanel.TILE_SIZE * 23;//1104px 23 is arbitrary no. use for initial position
+        worldY = gamePanel.TILE_SIZE * 21;//1008px similarly 21 is arbitrary no.
         playerSpeed = 4;
-        direction = "down";
+        direction = "left";
     }
     public void getPlayerImage()
     {
@@ -49,28 +62,51 @@ public class Player extends Entity{
     }
     public void update()//responsible for changing player position
     {
-        if(keyH.upPressed)
-        {
-            direction = "up";
-            playerY-=playerSpeed;
+        if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed) {
+            if (keyH.upPressed) {
+
+                direction = "up";
+//                worldY-=playerSpeed;
+            } else if (keyH.downPressed) {
+                direction = "down";
+//                worldY +=playerSpeed;
+            } else if (keyH.leftPressed) {
+                direction = "left";
+//                worldX -=playerSpeed;
+
+            } else if (keyH.rightPressed) {
+                direction = "right";
+//                worldX +=playerSpeed;
+            }
+//            else
+//            {
+//                direction = "down";
+//            }
+
+            //if collision is false player can move
+            if (!collisionOn) {
+
+                switch (direction) {
+
+                    case "up":
+                        worldY -= playerSpeed;
+                        break;
+                    case "down":
+                        worldY += playerSpeed;
+                        break;
+                    case "left":
+                        worldX -= playerSpeed;
+                        break;
+                    case "right":
+                        worldX += playerSpeed;
+                        break;
+
+                }
+            }
         }
-        else if(keyH.downPressed)
-        {
-            direction = "down";
-            playerY +=playerSpeed;
-        }else if(keyH.rightPressed)
-        {
-            direction = "right";
-            playerX +=playerSpeed;
-        }else if(keyH.leftPressed)
-        {
-            direction = "left";
-            playerX -=playerSpeed;
-        }
-        else
-        {
-            direction = "down";
-        }
+        //check tile collision
+        collisionOn = false;
+        gamePanel.cChecker.checkTile(this);
         spriteCounter++;
 
         if(spriteCounter > 12)
@@ -84,7 +120,7 @@ public class Player extends Entity{
     public void draw(Graphics2D g2d)
     {
        /* g2d.setColor(Color.white);
-        g2d.fillRect(playerX,playerY,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE);
+        g2d.fillRect(worldX,playerY,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE);
         */
 
         BufferedImage image = null;
@@ -106,7 +142,8 @@ public class Player extends Entity{
                 if (spriteNum == 2) image = right2;
             }
         }
-        g2d.drawImage(image,playerX,playerY,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE,null);
+        g2d.drawImage(image,screenX,screenY,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE,null);//the position of the
+        // player does not change
 
     }
 }
