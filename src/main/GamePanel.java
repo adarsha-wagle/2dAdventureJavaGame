@@ -1,10 +1,12 @@
 package main;
 
 import entity.Player;
+import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLOutput;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -34,20 +36,26 @@ public class GamePanel extends JPanel implements Runnable{
 
     int FPS = 60;
 
-    Thread gameThread;
-    KeyHandler keyH = new KeyHandler();
-   public Player player = new Player(this,keyH);
-
     TileManager tileManager = new TileManager(this);
+    KeyHandler keyH = new KeyHandler();
+    Thread gameThread;
+
     public CollisionChecker cChecker = new CollisionChecker(this) ;
+    public AssetSetter aSetter = new AssetSetter(this);
+   public Player player = new Player(this,keyH);
+   public SuperObject obj[] = new SuperObject[10];
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);//if set to true, all the drawing from this component done in an offscreen painting buffer//for better rendering performance
-        startGameThread();
+
         this.addKeyListener(keyH);
         this.setFocusable(true);//game panel is focused to get key input
+    }
+    public void setupGame()
+    {
+        aSetter.setObject();
     }
     public void startGameThread()
     {
@@ -86,7 +94,17 @@ public class GamePanel extends JPanel implements Runnable{
     {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        //tile
         tileManager.draw(g2d);
+        //object : chest,door,key,etc
+        for (int i = 0;i<obj.length;i++){
+            if(obj[i]!=null)//drawing if only object is created
+            {
+//                System.out.println(obj[i].name);
+                obj[i].draw(g2d,this) ;
+            }
+        }
+        //player
         player.draw(g2d);
 
         g2d.dispose();//to save memory

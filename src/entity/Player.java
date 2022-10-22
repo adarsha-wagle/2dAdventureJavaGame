@@ -67,14 +67,14 @@ player is in center of the screen and background is moving
 
                 direction = "up";
 //                worldY-=playerSpeed;
-            } else if (keyH.downPressed) {
+            }  if (keyH.downPressed) {
                 direction = "down";
 //                worldY +=playerSpeed;
-            } else if (keyH.leftPressed) {
+            }  if (keyH.leftPressed) {
                 direction = "left";
 //                worldX -=playerSpeed;
 
-            } else if (keyH.rightPressed) {
+            }  if (keyH.rightPressed) {
                 direction = "right";
 //                worldX +=playerSpeed;
             }
