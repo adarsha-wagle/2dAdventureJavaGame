@@ -16,6 +16,8 @@ player is in center of the screen and background is moving
     //screenX and screenY does not change throughout the game
     public final  int screenX;
     public final int screenY;
+
+    int hasKey = 0;
     GamePanel gamePanel;
     KeyHandler keyH;
     public Player(GamePanel gP,KeyHandler keyH){
@@ -25,7 +27,13 @@ player is in center of the screen and background is moving
         screenX = gamePanel.SCREEN_WIDTH/2-(gamePanel.TILE_SIZE/2);//768/2-24 = 360pixel
         screenY = gamePanel.SCREEN_HEIGHT/2-(gamePanel.TILE_SIZE/2);//576/2-24 = 264pixel
 
-        solidArea = new Rectangle(8,16,32,30);
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+        solidArea.width = 32;
+        solidArea.height = 30;
         setDefaultValues();
         getPlayerImage();
     }
@@ -66,49 +74,37 @@ player is in center of the screen and background is moving
             if (keyH.upPressed) {
 
                 direction = "up";
-//                worldY-=playerSpeed;
             }  if (keyH.downPressed) {
                 direction = "down";
-//                worldY +=playerSpeed;
             }  if (keyH.leftPressed) {
                 direction = "left";
-//                worldX -=playerSpeed;
+
 
             }  if (keyH.rightPressed) {
                 direction = "right";
-//                worldX +=playerSpeed;
             }
-//            else
-//            {
-//                direction = "down";
-//            }
+            //CHECK TILE COLLISION
+            collisionOn = false;
+            gamePanel.cChecker.checkTile(this);
+
+            //CHECK OBJECT COLLISION
+            int objIndex = gamePanel.cChecker.checkObject(this,true);
+            pickUpObject(objIndex);
+
 
             //if collision is false player can move
             if (!collisionOn) {
 
                 switch (direction) {
-
-                    case "up":
-                        worldY -= playerSpeed;
-                        break;
-                    case "down":
-                        worldY += playerSpeed;
-                        break;
-                    case "left":
-                        worldX -= playerSpeed;
-                        break;
-                    case "right":
-                        worldX += playerSpeed;
-                        break;
-
+                    case "up" -> worldY -= playerSpeed;
+                    case "down" -> worldY += playerSpeed;
+                    case "left" -> worldX -= playerSpeed;
+                    case "right" -> worldX += playerSpeed;
                 }
             }
         }
-        //check tile collision
-        collisionOn = false;
-        gamePanel.cChecker.checkTile(this);
-        spriteCounter++;
 
+        spriteCounter++;
         if(spriteCounter > 12)
         {
             spriteNum = spriteNum == 1?2:1;
@@ -116,6 +112,30 @@ player is in center of the screen and background is moving
             spriteCounter = 0;
         }
 
+    }
+    public void pickUpObject(int i)
+    {
+        if(i!=999)//if index is 999 then we have not touched anything
+        {
+            String objectName = gamePanel.obj[i].name;
+            switch (objectName)
+            {
+                case "Key":
+                    hasKey++;
+                    gamePanel.obj[i] = null;//destroy the key
+                    break;
+                case "Door":
+                    if(hasKey>0){
+                        System.out.println("name"+gamePanel.obj[i].name);
+                        System.out.println("i"+i);
+                        gamePanel.obj[i] = null;//destroy door
+                        hasKey--;
+                    }
+                    break;
+            }
+            System.out.println("Keys"+hasKey);
+
+        }
     }
     public void draw(Graphics2D g2d)
     {

@@ -43,7 +43,7 @@ public class GamePanel extends JPanel implements Runnable{
     public CollisionChecker cChecker = new CollisionChecker(this) ;
     public AssetSetter aSetter = new AssetSetter(this);
    public Player player = new Player(this,keyH);
-   public SuperObject obj[] = new SuperObject[10];
+   public SuperObject[] obj = new SuperObject[10];
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
@@ -97,11 +97,11 @@ public class GamePanel extends JPanel implements Runnable{
         //tile
         tileManager.draw(g2d);
         //object : chest,door,key,etc
-        for (int i = 0;i<obj.length;i++){
-            if(obj[i]!=null)//drawing if only object is created
+        for (SuperObject superObject : obj) {
+            if (superObject != null)//drawing if only object is created
             {
 //                System.out.println(obj[i].name);
-                obj[i].draw(g2d,this) ;
+                superObject.draw(g2d, this);
             }
         }
         //player

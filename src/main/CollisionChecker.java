@@ -7,7 +7,7 @@ public class CollisionChecker {
         this.gamePanel = gamePanel;
     }
     //checks if player touches tile or not
-    public void checkTile(Entity entity)//using entity instead of player because we want to check collision of others as well like npc
+    public void checkTile(Entity entity)//using entity instead of player because we want to check collision of others object
     {
         int entityLeftWorldX = entity.worldX+entity.solidArea.x;
         int entityRightWorldX = entity.worldX + entity.solidArea.x + entity.solidArea.width;
@@ -58,5 +58,54 @@ public class CollisionChecker {
                 }
             }
         }
+    }
+    public int checkObject(Entity entity,boolean player)
+    {
+        int index = 999;//if it is monster or npc's return this
+        for (int i = 0; i<gamePanel.obj.length;i++)
+        {
+            if(gamePanel.obj[i]!=null)
+            {
+                //get entity's solid area position
+                entity.solidArea.x = entity.worldX + entity.solidArea.x;
+                entity.solidArea.y = entity.worldY + entity.solidArea.y;
+                //get the object's solid area position
+                gamePanel.obj[i].solidArea.x = gamePanel.obj[i].worldX + gamePanel.obj[i].solidArea.x;
+                gamePanel.obj[i].solidArea.y = gamePanel.obj[i].worldY + gamePanel.obj[i].solidArea.y;
+
+                switch(entity.direction)
+                {
+                    case "up":
+                        entity.solidArea.y-=entity.playerSpeed;
+                        break;
+                    case "down":
+                        entity.solidArea.y += entity.playerSpeed;
+                        break;
+                    case "left":
+                        entity.solidArea.x-=entity.playerSpeed;
+                        break;
+                    case "right":
+                        entity.solidArea.x+=entity.playerSpeed;
+                        break;
+                }
+                if(entity.solidArea.intersects(gamePanel.obj[i].solidArea))
+                {
+//                    System.out.println("collided to the object");
+                    if(gamePanel.obj[i].collision)
+                    {
+                        entity.collisionOn = true;
+                    }
+                    if(player)
+                    {
+                        index = i;//if it is player we return i
+                    }
+                }
+                entity.solidArea.x = entity.solidAreaDefaultX;
+                entity.solidArea.y = entity.solidAreaDefaultY;
+                gamePanel.obj[i].solidArea.x = gamePanel.obj[i].solidAreaDefaultX;
+                gamePanel.obj[i].solidArea.y = gamePanel.obj[i].solidAreaDefaultY;
+            }
+        }
+        return index;
     }
 }
