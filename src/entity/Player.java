@@ -19,7 +19,7 @@ player is in center of the screen and background is moving
     public final  int screenX;
     public final int screenY;
 
-    int hasKey = 0;
+    public int hasKey = 0;
     GamePanel gamePanel;
     KeyHandler keyH;
 
@@ -38,7 +38,7 @@ player is in center of the screen and background is moving
         solidArea.y = 16;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        solidArea.width = 32;
+        solidArea.width = 30;
         solidArea.height = 30;
         setDefaultValues();
         getPlayerImage();
@@ -130,6 +130,7 @@ player is in center of the screen and background is moving
                     hasKey++;
                     gamePanel.obj[i] = null;//destroy the key
                     gamePanel.playSE(1);
+                    gamePanel.ui.showMessage("You got a key.");
                     break;
                 case "Door":
                     if(hasKey>0){
@@ -138,23 +139,34 @@ player is in center of the screen and background is moving
                         gamePanel.obj[i] = null;//destroy door
                         gamePanel.playSE(3);
                         hasKey--;
+                        gamePanel.ui.showMessage("You opened the door");
+                    }
+                    else {
+                        gamePanel.ui.showMessage("You need a key!");
                     }
                     break;
                 case "Boots":
                     playerSpeed+=2;
                     gamePanel.obj[i] = null;
                     gamePanel.playSE(2);
+                    gamePanel.ui.showMessage("Speeding Up");
                     timer.schedule(new TimerTask(){
                         @Override
                         public void run()
                         {
                             playerSpeed = 4;
+                            gamePanel.playSE(5);
                             timer.cancel();
                         }
                     },BOOT_POWER_DURATION*1000);
                     break;
+                case "Chest":
+                    gamePanel.ui.gameFinished = true;
+                    gamePanel.stopMusic();
+                    gamePanel.playSE(4);
+                    break;
+
             }
-//            System.out.println("Keys"+hasKey);
 
         }
     }
