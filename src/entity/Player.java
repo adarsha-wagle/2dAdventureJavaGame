@@ -7,6 +7,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Player extends Entity{
 
@@ -20,6 +22,10 @@ player is in center of the screen and background is moving
     int hasKey = 0;
     GamePanel gamePanel;
     KeyHandler keyH;
+
+    public final int BOOT_POWER_DURATION = 20;
+    Timer timer = new Timer();
+
     public Player(GamePanel gP,KeyHandler keyH){
 
         this.gamePanel = gP;
@@ -123,20 +129,36 @@ player is in center of the screen and background is moving
                 case "Key":
                     hasKey++;
                     gamePanel.obj[i] = null;//destroy the key
+                    gamePanel.playSE(1);
                     break;
                 case "Door":
                     if(hasKey>0){
                         System.out.println("name"+gamePanel.obj[i].name);
                         System.out.println("i"+i);
                         gamePanel.obj[i] = null;//destroy door
+                        gamePanel.playSE(3);
                         hasKey--;
                     }
                     break;
+                case "Boots":
+                    playerSpeed+=2;
+                    gamePanel.obj[i] = null;
+                    gamePanel.playSE(2);
+                    timer.schedule(new TimerTask(){
+                        @Override
+                        public void run()
+                        {
+                            playerSpeed = 4;
+                            timer.cancel();
+                        }
+                    },BOOT_POWER_DURATION*1000);
+                    break;
             }
-            System.out.println("Keys"+hasKey);
+//            System.out.println("Keys"+hasKey);
 
         }
     }
+
     public void draw(Graphics2D g2d)
     {
        /* g2d.setColor(Color.white);
