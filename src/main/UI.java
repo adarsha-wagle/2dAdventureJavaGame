@@ -29,7 +29,7 @@ public class UI  {
         roman_25 = new Font("TimesRoman",Font.ITALIC|Font.BOLD,25);
         roman_40 = new Font("TimesRoman",Font.ITALIC|Font.BOLD,40);
         arial_80 = new Font("Arial",Font.BOLD,60);
-        OBJ_Key key = new OBJ_Key();
+        OBJ_Key key = new OBJ_Key(gp);
         keyImage = key.image;
     }
     public void showMessage(String text,Color color)

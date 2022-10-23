@@ -1,7 +1,9 @@
 package entity;
 
+import jdk.jshell.execution.Util;
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -53,29 +55,32 @@ player is in center of the screen and background is moving
     }
     public void getPlayerImage()
     {
-        try{
-//            up1 = ImageIO.read(ClassLoader.getSystemResourceAsStream("player/boy_up_1.png"));
-//            up2 = ImageIO.read(getClass().getClassLoader().getResourceAsStream("player/boy_up_2.png"));
-                /*
-                    throws warning in the above code
-                 */
 
-            stand1 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("player/boy_stand_1.png")));
-            stand2 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("player/boy_stand_2.png")));
-            up1 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("player/boy_up_1.png")));
-            up2 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_up_2.png")));
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_left_1.png")));
-            left2 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_left_2.png")));
-            right1 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_right_1.png")));
-            right2 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_right_2.png")));
-            down1 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_down_1.png")));
-            down2 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_down_2.png")));
-
+        stand1 = setupPlayer("boy_stand_1");
+        stand2 = setupPlayer("boy_stand_2");
+        up1 = setupPlayer("boy_up_1");
+        up2 = setupPlayer("boy_up_2");
+        down1 = setupPlayer("boy_down_1");
+        down2 = setupPlayer("boy_down_2");
+        left1 = setupPlayer("boy_left_1");
+        left2 = setupPlayer("boy_left_2");
+        right1 = setupPlayer("boy_right_1");
+        right2 = setupPlayer("boy_right_2");
+    }
+    public BufferedImage setupPlayer(String imageName)
+    {
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage image = null;
+        try
+        {
+            image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/"+imageName+".png")));
+            image = uTool.scaledImage(image,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE);
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
+        return image;
     }
     public void update()//responsible for changing player position
     {
@@ -206,7 +211,7 @@ player is in center of the screen and background is moving
                 if (spriteNum == 2) image = stand2;
             }
         }
-        g2d.drawImage(image,screenX,screenY,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE,null);//the position of the
+        g2d.drawImage(image,screenX,screenY,null);//the position of the
         // player does not change
 
         //PLAYER COLLISION CHECKER
