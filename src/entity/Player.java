@@ -130,7 +130,7 @@ player is in center of the screen and background is moving
                     hasKey++;
                     gamePanel.obj[i] = null;//destroy the key
                     gamePanel.playSE(1);
-                    gamePanel.ui.showMessage("You got a key.");
+                    gamePanel.ui.showMessage("You got a key.",new Color(240, 221, 98));
                     break;
                 case "Door":
                     if(hasKey>0){
@@ -139,17 +139,17 @@ player is in center of the screen and background is moving
                         gamePanel.obj[i] = null;//destroy door
                         gamePanel.playSE(3);
                         hasKey--;
-                        gamePanel.ui.showMessage("You opened the door");
+                        gamePanel.ui.showMessage("You opened the door",new Color(135, 75, 32));
                     }
                     else {
-                        gamePanel.ui.showMessage("You need a key!");
+                        gamePanel.ui.showMessage("You need a key!",new Color(135, 75, 32));
                     }
                     break;
                 case "Boots":
                     playerSpeed+=2;
                     gamePanel.obj[i] = null;
                     gamePanel.playSE(2);
-                    gamePanel.ui.showMessage("Speeding Up");
+                    gamePanel.ui.showMessage("Speeding Up",new Color(25, 111, 247));
                     timer.schedule(new TimerTask(){
                         @Override
                         public void run()
