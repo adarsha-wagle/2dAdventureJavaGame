@@ -38,8 +38,8 @@ player is in center of the screen and background is moving
         solidArea.y = 16;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
-        solidArea.width = 30;
-        solidArea.height = 30;
+        solidArea.width = 28;
+        solidArea.height = 28;
         setDefaultValues();
         getPlayerImage();
     }
@@ -59,6 +59,9 @@ player is in center of the screen and background is moving
                 /*
                     throws warning in the above code
                  */
+
+            stand1 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("player/boy_stand_1.png")));
+            stand2 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("player/boy_stand_2.png")));
             up1 = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("player/boy_up_1.png")));
             up2 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_up_2.png")));
             left1 = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/boy_left_1.png")));
@@ -108,6 +111,9 @@ player is in center of the screen and background is moving
                     case "right" -> worldX += playerSpeed;
                 }
             }
+        }
+        else {
+            direction = "stand";
         }
 
         spriteCounter++;
@@ -195,9 +201,17 @@ player is in center of the screen and background is moving
                 if (spriteNum == 1) image = right1;
                 if (spriteNum == 2) image = right2;
             }
+            case "stand" ->{
+                if (spriteNum == 1) image = stand1;
+                if (spriteNum == 2) image = stand2;
+            }
         }
         g2d.drawImage(image,screenX,screenY,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE,null);//the position of the
         // player does not change
+
+        //PLAYER COLLISION CHECKER
+//        g2d.setColor(Color.red);
+//        g2d.drawRect(screenX+solidArea.x,screenY+solidArea.y,solidArea.width,solidArea.height);
 
     }
 }
