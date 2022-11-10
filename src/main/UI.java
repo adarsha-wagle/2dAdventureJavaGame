@@ -7,12 +7,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 
 public class UI  {
     GamePanel gp;
     Graphics2D g2;
-    Font roman_25,arial_80,roman_40;
+    Font maruMonica,purisaB;
 
 
     Color color;
@@ -28,10 +30,21 @@ public class UI  {
     public UI(GamePanel gp)
     {
         this.gp = gp;
-        roman_25 = new Font("TimesRoman",Font.ITALIC|Font.BOLD,25);
-        roman_40 = new Font("TimesRoman",Font.ITALIC|Font.BOLD,40);
-        arial_80 = new Font("Arial",Font.BOLD,60);
-//
+       //INSTANTIATE FONT
+        try {
+
+
+            InputStream is = getClass().getResourceAsStream("/font/x12y16pxMaruMonica.ttf");
+            maruMonica = Font.createFont(Font.TRUETYPE_FONT, is);
+            is = getClass().getResourceAsStream("/font/Purisa Bold.ttf");
+            maruMonica = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (IOException e) {
+            System.out.println("Cannot load font");
+            e.printStackTrace();
+        } catch (FontFormatException e) {
+            System.out.println("Cannot create font");
+            e.printStackTrace();
+        }
     }
     public void showMessage(String text,Color color)
     {
@@ -42,7 +55,9 @@ public class UI  {
     public void draw(Graphics2D g2) {
         this.g2 = g2;
 
-        g2.setFont(roman_40);
+//        g2.setFont(maruMonica);
+        g2.setFont(purisaB);
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(Color.white);
         //play state
         if(gp.gameState == gp.playState)
