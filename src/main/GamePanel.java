@@ -1,12 +1,13 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.SQLOutput;
+
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -20,6 +21,8 @@ public class GamePanel extends JPanel implements Runnable{
     6.updating player movement
     7.instantiating tiles
      */
+
+    //INITIAL SETUP FOR SCREEN
     final int ORIGINAL_TILE_SIZE = 16;//tile size
     final int SCALE = 3;
     public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;//48*48 tile
@@ -31,23 +34,41 @@ public class GamePanel extends JPanel implements Runnable{
     //World Settings
     public final int MAX_WORLD_COL = 50;
     public final int MAX_WORLD_ROW = 50;
-//    public final int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;//2400px total pixel used by whole game
-//    public final int WORLD_HEIGHT  = TILE_SIZE * MAX_WORLD_ROW;//2400px total pixel used by whole game
+
 
     int FPS = 60;
 
+    //LOADING MAP
     TileManager tileManager = new TileManager(this);
-    KeyHandler keyH = new KeyHandler();
 
+    //FOR CHECKING INPUT LIKE PLAYER MOVEMENT
+   public KeyHandler keyH = new KeyHandler(this);
+
+    //SETTING SOUND EFFECT AND MUSIC
     Sound music  = new Sound();
     Sound soundEff = new Sound();
     Thread gameThread;
 
+    //COLLISION CHECKER FOR PLAYER AND TILES
     public CollisionChecker cChecker = new CollisionChecker(this) ;
+
+    //FOR SETTING UP NPC AND OBJECTS
     public AssetSetter aSetter = new AssetSetter(this);
+
+    //UI FOR PLAY,PAUSE,ETC
      public UI ui = new UI(this) ;
+
+   //ENTITY AND OBJECT
    public Player player = new Player(this,keyH);
    public SuperObject[] obj = new SuperObject[10];
+   public Entity npc[] = new Entity[10];
+
+   //GAME STATE LIKE PAUSE,PLAY,DIALOG MODE
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
+    public final int dialogueState = 3;
+
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
@@ -60,7 +81,9 @@ public class GamePanel extends JPanel implements Runnable{
     public void setupGame()
     {
         aSetter.setObject();
+        aSetter.setNPC();
         playMusic(0);
+        gameState = playState;
     }
     public void startGameThread()
     {
@@ -93,7 +116,24 @@ public class GamePanel extends JPanel implements Runnable{
     }
     public void update()//responsible for changing player position
     {
+        if(gameState == playState)
+        {
+
         player.update();
+        //NPC
+            for (int i = 0;i<npc.length;i++)
+            {
+                if(npc[i]!=null)
+                {
+                    npc[i].update();
+                }
+            }
+        }
+        if(gameState == pauseState)
+        {
+            //pause
+        }
+
     }
     public void paintComponent(Graphics g)
     {
@@ -110,6 +150,14 @@ public class GamePanel extends JPanel implements Runnable{
             }
         }
         //player
+        //NPC
+            for (int i = 0;i<npc.length;i++)
+            {
+                if(npc[i]!=null)
+                {
+                    npc[i].draw(g2d);
+                }
+            }
         player.draw(g2d);
 
         //ui

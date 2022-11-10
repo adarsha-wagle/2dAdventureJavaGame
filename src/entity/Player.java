@@ -1,6 +1,5 @@
 package entity;
 
-import jdk.jshell.execution.Util;
 import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
@@ -10,7 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 import java.util.Timer;
-import java.util.TimerTask;
+
 
 public class Player extends Entity{
 
@@ -21,20 +20,22 @@ player is in center of the screen and background is moving
     public final  int screenX;
     public final int screenY;
 
-    public int hasKey = 0;
-    GamePanel gamePanel;
+
     KeyHandler keyH;
 
+    //FOR BOOT POWER
     public final int BOOT_POWER_DURATION = 20;
     Timer timer = new Timer();
 
     public Player(GamePanel gP,KeyHandler keyH){
+        super(gP);
 
-        this.gamePanel = gP;
+
         this.keyH = keyH;
-        screenX = gamePanel.SCREEN_WIDTH/2-(gamePanel.TILE_SIZE/2);//768/2-24 = 360pixel
-        screenY = gamePanel.SCREEN_HEIGHT/2-(gamePanel.TILE_SIZE/2);//576/2-24 = 264pixel
+        screenX = gp.SCREEN_WIDTH/2-(gp.TILE_SIZE/2);//768/2-24 = 360pixel
+        screenY = gp.SCREEN_HEIGHT/2-(gp.TILE_SIZE/2);//576/2-24 = 264pixel
 
+       // FOR COLLISION
         solidArea = new Rectangle();
         solidArea.x = 8;
         solidArea.y = 16;
@@ -48,40 +49,26 @@ player is in center of the screen and background is moving
     public void setDefaultValues()
     {
         //player position in world map
-        worldX = gamePanel.TILE_SIZE * 23;//1104px 23 is arbitrary no. use for initial position
-        worldY = gamePanel.TILE_SIZE * 21;//1008px similarly 21 is arbitrary no.
+        worldX = gp.TILE_SIZE * 23;//1104px 23 is arbitrary no. use for initial position
+        worldY = gp.TILE_SIZE * 21;//1008px similarly 21 is arbitrary no.
         playerSpeed = 4;
         direction = "left";
     }
     public void getPlayerImage()
     {
 
-        stand1 = setupPlayer("boy_stand_1");
-        stand2 = setupPlayer("boy_stand_2");
-        up1 = setupPlayer("boy_up_1");
-        up2 = setupPlayer("boy_up_2");
-        down1 = setupPlayer("boy_down_1");
-        down2 = setupPlayer("boy_down_2");
-        left1 = setupPlayer("boy_left_1");
-        left2 = setupPlayer("boy_left_2");
-        right1 = setupPlayer("boy_right_1");
-        right2 = setupPlayer("boy_right_2");
+        stand1 = setupPlayer("player/boy_stand_1");
+        stand2 = setupPlayer("player/boy_stand_2");
+        up1 = setupPlayer("player/boy_up_1");
+        up2 = setupPlayer("player/boy_up_2");
+        down1 = setupPlayer("player/boy_down_1");
+        down2 = setupPlayer("player/boy_down_2");
+        left1 = setupPlayer("player/boy_left_1");
+        left2 = setupPlayer("player/boy_left_2");
+        right1 = setupPlayer("player/boy_right_1");
+        right2 = setupPlayer("player/boy_right_2");
     }
-    public BufferedImage setupPlayer(String imageName)
-    {
-        UtilityTool uTool = new UtilityTool();
-        BufferedImage image = null;
-        try
-        {
-            image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("player/"+imageName+".png")));
-            image = uTool.scaledImage(image,gamePanel.TILE_SIZE,gamePanel.TILE_SIZE);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return image;
-    }
+
     public void update()//responsible for changing player position
     {
         if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed) {
@@ -99,10 +86,12 @@ player is in center of the screen and background is moving
             }
             //CHECK TILE COLLISION
             collisionOn = false;
-            gamePanel.cChecker.checkTile(this);
-
+            gp.cChecker.checkTile(this);
+            //CHECK NPC COLLISION
+            int npcIndex = gp.cChecker.checkEntity(this,gp.npc);
+            interactNPC(npcIndex);
             //CHECK OBJECT COLLISION
-            int objIndex = gamePanel.cChecker.checkObject(this,true);
+            int objIndex = gp.cChecker.checkObject(this,true);
             pickUpObject(objIndex);
 
 
@@ -134,54 +123,24 @@ player is in center of the screen and background is moving
     {
         if(i!=999)//if index is 999 then we have not touched anything
         {
-            String objectName = gamePanel.obj[i].name;
-            switch (objectName)
-            {
-                case "Key":
-                    hasKey++;
-                    gamePanel.obj[i] = null;//destroy the key
-                    gamePanel.playSE(1);
-                    gamePanel.ui.showMessage("You got a key.",new Color(240, 221, 98));
-                    break;
-                case "Door":
-                    if(hasKey>0){
-                        System.out.println("name"+gamePanel.obj[i].name);
-                        System.out.println("i"+i);
-                        gamePanel.obj[i] = null;//destroy door
-                        gamePanel.playSE(3);
-                        hasKey--;
-                        gamePanel.ui.showMessage("You opened the door",new Color(135, 75, 32));
-                    }
-                    else {
-                        gamePanel.ui.showMessage("You need a key!",new Color(135, 75, 32));
-                    }
-                    break;
-                case "Boots":
-                    playerSpeed+=2;
-                    gamePanel.obj[i] = null;
-                    gamePanel.playSE(2);
-                    gamePanel.ui.showMessage("Speeding Up",new Color(25, 111, 247));
-                    timer.schedule(new TimerTask(){
-                        @Override
-                        public void run()
-                        {
-                            playerSpeed = 4;
-                            gamePanel.playSE(5);
-                            timer.cancel();
-                        }
-                    },BOOT_POWER_DURATION*1000);
-                    break;
-                case "Chest":
-                    gamePanel.ui.gameFinished = true;
-                    gamePanel.stopMusic();
-                    gamePanel.playSE(4);
-                    break;
 
-            }
 
         }
     }
+    public void interactNPC(int i)
+    {
+        if(i!=999)
+        {
+            System.out.println("Hitting npc");
+            if(gp.keyH.talkPressed)
+            {
+                gp.gameState = gp.dialogueState;
+                gp.npc[i].speak();
+            }
 
+        }
+        gp.keyH.talkPressed = false;
+    }
     public void draw(Graphics2D g2d)
     {
        /* g2d.setColor(Color.white);

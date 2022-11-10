@@ -108,4 +108,89 @@ public class CollisionChecker {
         }
         return index;
     }
+    public int checkEntity(Entity entity,Entity[] target)
+    {
+        int index = 999;//if it is monster or npc's return this
+        for (int i =0;i< target.length;i++)
+        {
+           if( target[i]!=null)
+            {
+                //get entity's solid area position
+                entity.solidArea.x = entity.worldX + entity.solidArea.x;
+                entity.solidArea.y = entity.worldY + entity.solidArea.y;
+                //get the object's solid area position
+                target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
+                target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
+
+                switch(entity.direction)
+                {
+                    case "up":
+                        entity.solidArea.y-=entity.playerSpeed;
+                        break;
+                    case "down":
+                        entity.solidArea.y += entity.playerSpeed;
+                        break;
+                    case "left":
+                        entity.solidArea.x-=entity.playerSpeed;
+                        break;
+                    case "right":
+                        entity.solidArea.x+=entity.playerSpeed;
+                        break;
+                }
+                if(entity.solidArea.intersects(target[i].solidArea))
+                {
+//                    System.out.println("collided to the object");
+
+                        entity.collisionOn = true;
+                        index = i;//if it is player we return i
+
+
+
+
+                }
+                entity.solidArea.x = entity.solidAreaDefaultX;
+                entity.solidArea.y = entity.solidAreaDefaultY;
+                target[i].solidArea.x = target[i].solidAreaDefaultX;
+                target[i].solidArea.y = target[i].solidAreaDefaultY;
+            }
+        }
+        return index;
+    }
+    public void checkPlayer(Entity entity)
+    {
+        //get entity's solid area position
+        entity.solidArea.x = entity.worldX + entity.solidArea.x;
+        entity.solidArea.y = entity.worldY + entity.solidArea.y;
+        //get the object's solid area position
+        gamePanel.player.solidArea.x = gamePanel.player.worldX + gamePanel.player.solidArea.x;
+        gamePanel.player.solidArea.y = gamePanel.player.worldY + gamePanel.player.solidArea.y;
+
+        switch(entity.direction)
+        {
+            case "up":
+                entity.solidArea.y-=entity.playerSpeed;
+                break;
+            case "down":
+                entity.solidArea.y += entity.playerSpeed;
+                break;
+            case "left":
+                entity.solidArea.x-=entity.playerSpeed;
+                break;
+            case "right":
+                entity.solidArea.x+=entity.playerSpeed;
+                break;
+        }
+        if(entity.solidArea.intersects(gamePanel.player.solidArea))
+        {
+//                    System.out.println("collided to the object");
+
+            entity.collisionOn = true;
+
+        }
+        entity.solidArea.x = entity.solidAreaDefaultX;
+        entity.solidArea.y = entity.solidAreaDefaultY;
+        gamePanel.player.solidArea.x = gamePanel.player.solidAreaDefaultX;
+        gamePanel.player.solidArea.y = gamePanel.player.solidAreaDefaultY;
+    }
+
 }

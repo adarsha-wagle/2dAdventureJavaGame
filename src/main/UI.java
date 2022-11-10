@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 
 public class UI  {
     GamePanel gp;
+    Graphics2D g2;
     Font roman_25,arial_80,roman_40;
 
 
@@ -20,17 +21,17 @@ public class UI  {
     int messageCounter = 0;
     BufferedImage keyImage;
     public boolean gameFinished = false;
+    public String currentDialogue = "";//npc dialogue : old man
 
-    double playTime;
-    DecimalFormat dFormat = new DecimalFormat("#0.00");
+//    double playTime;
+//    DecimalFormat dFormat = new DecimalFormat("#0.00");
     public UI(GamePanel gp)
     {
         this.gp = gp;
         roman_25 = new Font("TimesRoman",Font.ITALIC|Font.BOLD,25);
         roman_40 = new Font("TimesRoman",Font.ITALIC|Font.BOLD,40);
         arial_80 = new Font("Arial",Font.BOLD,60);
-        OBJ_Key key = new OBJ_Key(gp);
-        keyImage = key.image;
+//
     }
     public void showMessage(String text,Color color)
     {
@@ -39,62 +40,69 @@ public class UI  {
         messageOn = true;
     }
     public void draw(Graphics2D g2) {
-        if (gameFinished) {
-            String text;
-            int textLength;
-            int x,y;
+        this.g2 = g2;
 
-
-            g2.setFont(roman_40);
-            g2.setColor(Color.white);
-            text = "You found the treasure";
-            textLength = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
-            x =(( gp.SCREEN_WIDTH/2)-gp.TILE_SIZE)-(textLength/2);
-            y = gp.SCREEN_HEIGHT/2-gp.TILE_SIZE-(gp.TILE_SIZE*3);
-            g2.drawString(text,x,y);
-
-            text = "Your Time is :"+dFormat.format(playTime)+"!";
-            textLength = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
-            x = gp.SCREEN_WIDTH/2-gp.TILE_SIZE-textLength/2;
-            y = gp.SCREEN_HEIGHT/2-gp.TILE_SIZE+(gp.TILE_SIZE*4);
-            g2.drawString(text,x,y);
-
-            g2.setFont(arial_80);
-            g2.setColor(Color.yellow);
-            text = "Congratulations";
-            textLength = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
-            x = gp.SCREEN_WIDTH/2-gp.TILE_SIZE-textLength/2;
-            y = gp.SCREEN_HEIGHT/2-gp.TILE_SIZE+(gp.TILE_SIZE*2);
-            g2.drawString(text,x,y);
-
-
-            gp.gameThread = null;
-        } else {
-
-            //KEY INFORMATION
-            g2.setFont(roman_25);
-            g2.setColor(Color.yellow);
-            g2.drawImage(keyImage, gp.TILE_SIZE / 4, gp.TILE_SIZE / 4, gp.TILE_SIZE, gp.TILE_SIZE, null);
-            g2.drawString("x " + gp.player.hasKey, 46, 55);
-
-            //TIME INFORMATION
-            playTime+=(double)1/60;
-            g2.drawString("Time:"+dFormat.format(playTime),gp.TILE_SIZE*13,40);
-
-            if (messageOn) {
-                g2.setColor(color);
-                g2.setFont(g2.getFont().deriveFont(25F));
-                g2.drawString(message, gp.TILE_SIZE /4, gp.TILE_SIZE * 4);
-                messageCounter++;
-                if (messageCounter > 60)//120 frame or 2sec and d
-                {
-                    messageCounter = 0;
-                    messageOn = false;
-
-                }
-            }
+        g2.setFont(roman_40);
+        g2.setColor(Color.white);
+        //play state
+        if(gp.gameState == gp.playState)
+        {
+            //do play stuff later
+        }
+        //PAUSE STATE
+        if(gp.gameState == gp.pauseState)
+        {
+            drawPauseScreen();
+        }
+        //DIALOGUE STATE
+        if(gp.gameState == gp.dialogueState)
+        {
+            drawDialogueScreen();
         }
     }
+    public void drawDialogueScreen()
+    {
+        int x=gp.TILE_SIZE*2;
+        int y=gp.TILE_SIZE/2;
+        int width = gp.SCREEN_WIDTH-(gp.TILE_SIZE*5);
+        int height = gp.TILE_SIZE*4;
+        //DIALOG WINDOW
+        drawSubWindow(x,y,width,height);
 
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN,26F));
+        x+=gp.TILE_SIZE;
+        y+=gp.TILE_SIZE;
+        //Breaking lines of the dialogue so that it will not overflow
+        for (String line : currentDialogue.split("\n"))
+        {
+            g2.drawString(line,x,y);
+            y+=40;
+        }
+
+    }
+    public void drawSubWindow(int x,int y,int width,int height  )
+    {
+        Color c = new Color(0,0,0,200);//black color with transparency
+        g2.setColor(c);
+        g2.fillRoundRect(x,y,width,height,35,35);
+        c = new Color(255,255,255);
+        g2.setColor(c);
+        g2.setStroke(new BasicStroke(5));//defies the width of outlines of graphics which are rendered with a Graphics 2d
+        g2.drawRoundRect(x+5,y+4,width-10,height-10,25,25);
+    }
+    public void drawPauseScreen()
+    {
+        String text = "PAUSED";
+        int x = getXforCenteredText(text);
+        int y = gp.SCREEN_HEIGHT/2;
+        g2.drawString(text,x,y);
+    }
+    public int getXforCenteredText(String text)
+    {
+        int length = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
+        int  x = gp.SCREEN_WIDTH/2-length/2;
+
+        return x;
+    }
 
 }
