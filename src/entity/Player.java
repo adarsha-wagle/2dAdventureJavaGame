@@ -53,6 +53,10 @@ player is in center of the screen and background is moving
         worldY = gp.TILE_SIZE * 21;//1008px similarly 21 is arbitrary no.
         playerSpeed = 4;
         direction = "left";
+
+//        Player Status
+        maxLife = 6;//1 life = half heart
+        life = maxLife;//player current life
     }
     public void getPlayerImage()
     {

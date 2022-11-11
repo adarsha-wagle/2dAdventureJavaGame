@@ -28,6 +28,9 @@ public class Entity {
     String dialogue[] = new String[20];//dialogue for npc's
     int dialogueIndex = 0;//responsible for rendering multiple dialogues
 
+   //CHARACTER HEALTH
+ public int maxLife;
+ public int life;
   public Entity(GamePanel gp){
    this.gp = gp;
   }

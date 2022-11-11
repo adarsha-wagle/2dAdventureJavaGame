@@ -1,6 +1,8 @@
 package main;
 
+import object.OBJ_Heart;
 import object.OBJ_Key;
+import object.SuperObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +30,9 @@ public class UI  {
     //FOR TITLE
     public int commandNum = 0;
 
+    //Health UI
+    BufferedImage heart_full,heart_half,heart_blank;
+
     public UI(GamePanel gp)
     {
         this.gp = gp;
@@ -46,6 +51,12 @@ public class UI  {
             System.out.println("Cannot create font");
             e.printStackTrace();
         }
+
+        //CREATE HEART OBJECT
+        SuperObject heart =new OBJ_Heart(gp);
+        heart_full = heart.image;
+        heart_half = heart.image2;
+        heart_blank = heart.image3;
     }
     public void showMessage(String text,Color color)
     {
@@ -70,16 +81,45 @@ public class UI  {
         if(gp.gameState == gp.playState)
         {
             //do play stuff later
+            drawPlayerLife();
         }
         //PAUSE STATE
         if(gp.gameState == gp.pauseState)
-        {
+        {   drawPlayerLife();
             drawPauseScreen();
         }
         //DIALOGUE STATE
         if(gp.gameState == gp.dialogueState)
-        {
+        {      drawPlayerLife();
             drawDialogueScreen();
+        }
+    }
+    public void drawPlayerLife()
+    {
+        int x = gp.TILE_SIZE/2;
+        int y = gp.TILE_SIZE/2;
+        int i = 0;
+        //Draw Max Life
+        while(i<gp.player.maxLife/2)
+        {
+            g2.drawImage(heart_blank,x,y,null);
+            i++;
+            x+=gp.TILE_SIZE;
+        }
+        //Reset
+         x = gp.TILE_SIZE/2;
+         y = gp.TILE_SIZE/2;
+         i = 0;
+         //Draw Current Life
+        while(i<gp.player.life){
+            g2.drawImage(heart_half,x,y,null);
+            i++;
+            if(i<gp.player.life)
+            {
+                g2.drawImage(heart_full,x,y,null);
+            }
+            i++;
+            x+=gp.TILE_SIZE;
         }
     }
     public void drawTitleScreen()
