@@ -25,8 +25,9 @@ public class UI  {
     public boolean gameFinished = false;
     public String currentDialogue = "";//npc dialogue : old man
 
-//    double playTime;
-//    DecimalFormat dFormat = new DecimalFormat("#0.00");
+    //FOR TITLE
+    public int commandNum = 0;
+
     public UI(GamePanel gp)
     {
         this.gp = gp;
@@ -37,7 +38,7 @@ public class UI  {
             InputStream is = getClass().getResourceAsStream("/font/x12y16pxMaruMonica.ttf");
             maruMonica = Font.createFont(Font.TRUETYPE_FONT, is);
             is = getClass().getResourceAsStream("/font/Purisa Bold.ttf");
-            maruMonica = Font.createFont(Font.TRUETYPE_FONT, is);
+            purisaB = Font.createFont(Font.TRUETYPE_FONT, is);
         } catch (IOException e) {
             System.out.println("Cannot load font");
             e.printStackTrace();
@@ -55,10 +56,16 @@ public class UI  {
     public void draw(Graphics2D g2) {
         this.g2 = g2;
 
-//        g2.setFont(maruMonica);
-        g2.setFont(purisaB);
+
+        g2.setFont(maruMonica);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(Color.white);
+
+        //Title State
+        if(gp.gameState == gp.titleState)
+        {
+            drawTitleScreen();
+        }
         //play state
         if(gp.gameState == gp.playState)
         {
@@ -73,6 +80,55 @@ public class UI  {
         if(gp.gameState == gp.dialogueState)
         {
             drawDialogueScreen();
+        }
+    }
+    public void drawTitleScreen()
+    {
+        g2.setColor(new Color(0,0,0));
+        g2.fillRect(0,0,gp.SCREEN_WIDTH,gp.SCREEN_HEIGHT);
+        //Title Name
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,80F));
+        String text = "Blue Boy Adventure";
+        int x = getXforCenteredText(text);
+        int y = gp.TILE_SIZE*3;
+        //shadow of text
+        g2.setColor(Color.gray);
+        g2.drawString(text,x+5,y+5);
+        //actual color of text
+        g2.setColor(Color.white);
+        g2.drawString(text,x,y);
+
+        //Blue Boy Image
+        x = gp.SCREEN_WIDTH/2-(gp.TILE_SIZE*2)/2;
+        y+=gp.TILE_SIZE*1.5;
+        g2.drawImage(gp.player.down1,x,y,gp.TILE_SIZE*2,gp.TILE_SIZE*2,null);
+
+        //Menu
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,40F));
+        text = "New Game";
+        x = getXforCenteredText(text);
+        y+= gp.TILE_SIZE*3.5;
+        g2.drawString(text,x,y);
+        if(commandNum == 0)
+        {
+            g2.drawString(">",x-gp.TILE_SIZE,y);
+        }
+
+        text = "Load GAme";
+        x = getXforCenteredText(text);
+        y+=gp.TILE_SIZE;
+        g2.drawString(text,x,y);
+        if(commandNum == 1)
+        {
+            g2.drawString(">",x-gp.TILE_SIZE,y);
+        }
+        text = "Quit";
+        x = getXforCenteredText(text);
+        y+=gp.TILE_SIZE;
+        g2.drawString(text,x,y);
+        if(commandNum == 2)
+        {
+            g2.drawString(">",x-gp.TILE_SIZE,y);
         }
     }
     public void drawDialogueScreen()

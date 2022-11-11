@@ -16,6 +16,43 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+
+        //TITLE STATE
+        if(gp.gameState == gp.titleState)
+        {
+            //0 for new game,1 for load game and 2 for quit
+            if (e.getKeyCode() == KeyEvent.VK_UP) {
+                gp.ui.commandNum--;
+                if(gp.ui.commandNum<0)
+                {
+                    gp.ui.commandNum=2;
+                }
+
+            } if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                gp.ui.commandNum++;
+            if(gp.ui.commandNum>2)
+            {
+                gp.ui.commandNum=0;
+            }
+            }
+            if(e.getKeyCode() == KeyEvent.VK_ENTER)
+            {
+                if(gp.ui.commandNum == 0)
+                {
+                    gp.gameState = gp.playState;
+                    gp.playMusic(0);
+                }
+                if(gp.ui.commandNum == 1)
+                {
+                    //Add Later:Load Game
+
+                }
+                if(gp.ui.commandNum == 2)
+                {
+                    System.exit(0);
+                }
+            }
+        }
         //PLAY STATE
         if(gp.gameState == gp.playState) {
 

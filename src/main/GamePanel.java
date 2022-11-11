@@ -65,6 +65,7 @@ public class GamePanel extends JPanel implements Runnable{
 
    //GAME STATE LIKE PAUSE,PLAY,DIALOG MODE
     public int gameState;
+    public final int titleState = 0;
     public final int playState = 1;
     public final int pauseState = 2;
     public final int dialogueState = 3;
@@ -82,8 +83,8 @@ public class GamePanel extends JPanel implements Runnable{
     {
         aSetter.setObject();
         aSetter.setNPC();
-        playMusic(0);
-        gameState = playState;
+//        playMusic(0);
+        gameState = titleState;
     }
     public void startGameThread()
     {
@@ -135,35 +136,37 @@ public class GamePanel extends JPanel implements Runnable{
         }
 
     }
-    public void paintComponent(Graphics g)
-    {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        //tile
-        tileManager.draw(g2d);
-        //object : chest,door,key,etc
-        for (SuperObject superObject : obj) {
-            if (superObject != null)//drawing if only object is created
-            {
-//                System.out.println(obj[i].name);
-                superObject.draw(g2d, this);
-            }
-        }
-        //player
-        //NPC
-            for (int i = 0;i<npc.length;i++)
-            {
-                if(npc[i]!=null)
+        //TITLE SCREEN
+        if (gameState == titleState) {
+                ui.draw(g2d);
+        } else {
+            //Tile
+            tileManager.draw(g2d);
+            //object : chest,door,key,etc
+            for (SuperObject superObject : obj) {
+                if (superObject != null)//drawing if only object is created
                 {
+//                System.out.println(obj[i].name);
+                    superObject.draw(g2d, this);
+                }
+            }
+            //player
+            //NPC
+            for (int i = 0; i < npc.length; i++) {
+                if (npc[i] != null) {
                     npc[i].draw(g2d);
                 }
             }
-        player.draw(g2d);
+            player.draw(g2d);
 
-        //ui
-        ui.draw(g2d);
+            //ui
+            ui.draw(g2d);
 
-        g2d.dispose();//to save memory
+            g2d.dispose();//to save memory
+        }
     }
     public void playMusic(int i)
     {
