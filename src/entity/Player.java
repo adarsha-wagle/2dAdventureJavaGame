@@ -94,6 +94,13 @@ player is in center of the screen and background is moving
             //CHECK NPC COLLISION
             int npcIndex = gp.cChecker.checkEntity(this,gp.npc);
             interactNPC(npcIndex);
+
+            //CHECK EVENT
+            gp.eHandler.checkEvent();
+            gp.keyH.talkPressed = false;
+            gp.keyH.enterPressed = false;
+
+
             //CHECK OBJECT COLLISION
             int objIndex = gp.cChecker.checkObject(this,true);
             pickUpObject(objIndex);
@@ -143,7 +150,6 @@ player is in center of the screen and background is moving
             }
 
         }
-        gp.keyH.talkPressed = false;
     }
     public void draw(Graphics2D g2d)
     {

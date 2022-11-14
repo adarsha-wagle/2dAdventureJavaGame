@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
     public boolean upPressed,downPressed,leftPressed,rightPressed,talkPressed;
+    public boolean enterPressed;//for healing
     GamePanel gp;
     public KeyHandler(GamePanel gp){
         this.gp = gp;
@@ -73,6 +74,10 @@ public class KeyHandler implements KeyListener {
             if(e.getKeyCode()==KeyEvent.VK_T)
             {
                 talkPressed = true;
+            }
+            if(e.getKeyCode()==KeyEvent.VK_ENTER)
+            {
+                enterPressed = true;
             }
             //pausing game
             if (e.getKeyCode() == KeyEvent.VK_P) {
