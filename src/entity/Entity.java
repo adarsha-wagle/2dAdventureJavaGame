@@ -12,7 +12,7 @@ public class Entity {
  GamePanel gp;
    public int worldX ,worldY,playerSpeed;//worldX to
     public BufferedImage up1,up2,down1,down2,right1,right2,left1,left2,stand1,stand2;
-    public String direction;//player direction
+    public String direction = "down";//player direction
 
     //for player animation
     public int spriteCounter = 0;
@@ -31,6 +31,11 @@ public class Entity {
    //CHARACTER HEALTH
  public int maxLife;
  public int life;
+
+//SUPER OBJECT
+ public BufferedImage image,image2,image3;//image 2 and 3 for heart
+ public String name;
+ public boolean collision = false;
   public Entity(GamePanel gp){
    this.gp = gp;
   }
@@ -92,7 +97,7 @@ public class Entity {
  }
 
 
- public BufferedImage setupPlayer(String imagePath)
+ public BufferedImage setupImage(String imagePath)
  {
   UtilityTool uTool = new UtilityTool();
   BufferedImage image = null;

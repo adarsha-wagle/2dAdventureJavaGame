@@ -2,12 +2,9 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
-import main.UtilityTool;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
 import java.util.Timer;
 
 
@@ -61,16 +58,16 @@ player is in center of the screen and background is moving
     public void getPlayerImage()
     {
 
-        stand1 = setupPlayer("player/boy_stand_1");
-        stand2 = setupPlayer("player/boy_stand_2");
-        up1 = setupPlayer("player/boy_up_1");
-        up2 = setupPlayer("player/boy_up_2");
-        down1 = setupPlayer("player/boy_down_1");
-        down2 = setupPlayer("player/boy_down_2");
-        left1 = setupPlayer("player/boy_left_1");
-        left2 = setupPlayer("player/boy_left_2");
-        right1 = setupPlayer("player/boy_right_1");
-        right2 = setupPlayer("player/boy_right_2");
+        stand1 = setupImage("player/boy_stand_1");
+        stand2 = setupImage("player/boy_stand_2");
+        up1 = setupImage("player/boy_up_1");
+        up2 = setupImage("player/boy_up_2");
+        down1 = setupImage("player/boy_down_1");
+        down2 = setupImage("player/boy_down_2");
+        left1 = setupImage("player/boy_left_1");
+        left2 = setupImage("player/boy_left_2");
+        right1 = setupImage("player/boy_right_1");
+        right2 = setupImage("player/boy_right_2");
     }
 
     public void update()//responsible for changing player position

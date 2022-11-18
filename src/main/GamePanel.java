@@ -2,11 +2,13 @@ package main;
 
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class GamePanel extends JPanel implements Runnable{
@@ -63,8 +65,9 @@ public class GamePanel extends JPanel implements Runnable{
 
    //ENTITY AND OBJECT
    public Player player = new Player(this,keyH);
-   public SuperObject[] obj = new SuperObject[10];
-   public Entity npc[] = new Entity[10];
+   public Entity[] obj = new Entity[10];
+   public Entity[] npc = new Entity[10];
+   ArrayList<Entity> entityList = new ArrayList<>();
 
    //GAME STATE LIKE PAUSE,PLAY,DIALOG MODE
     public int gameState;
@@ -148,22 +151,44 @@ public class GamePanel extends JPanel implements Runnable{
         } else {
             //Tile
             tileManager.draw(g2d);
-            //object : chest,door,key,etc
-            for (SuperObject superObject : obj) {
-                if (superObject != null)//drawing if only object is created
+            //ADDING ENTITIES TO THE LIST
+            //adding player
+            entityList.add(player);
+            //adding npx
+            for(int i = 0;i<npc.length;i++)
+            {
+                if(npc[i]!=null)
                 {
-//                System.out.println(obj[i].name);
-                    superObject.draw(g2d, this);
+                    entityList.add(npc[i]);
                 }
             }
-            //player
-            //NPC
-            for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].draw(g2d);
+            //adding objects
+            for (int i  = 0;i< obj.length;i++)
+            {
+                if(obj[i]!=null){
+                    entityList.add(obj[i]);
                 }
             }
-            player.draw(g2d);
+            //SORTING ON THE BASIS OF WORLDY
+            Collections.sort(entityList, new Comparator<Entity>() {
+                @Override
+                public int compare(Entity e1, Entity e2) {
+                    int result = Integer.compare(e1.worldY,e2.worldY);
+                    return result;
+                }
+            });
+            //DRAW ENTITIES
+            for (int i = 0;i<entityList.size();i++)
+            {
+                entityList.get(i).draw(g2d);
+            }
+            //empty entity list
+//            entityList.clear();
+
+            for (int i = 0;i<entityList.size();i++)
+            {
+                entityList.remove(i);
+            }
 
             //ui
             ui.draw(g2d);
