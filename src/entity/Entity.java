@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class Entity {
  GamePanel gp;
-   public int worldX ,worldY,playerSpeed;//worldX to
+   public int worldX ,worldY, speed;//worldX to
     public BufferedImage up1,up2,down1,down2,right1,right2,left1,left2,stand1,stand2;
     public String direction = "down";//player direction
 
@@ -23,7 +23,9 @@ public class Entity {
     public int solidAreaDefaultX,solidAreaDefaultY;
     public boolean collisionOn = false;
     public int actionLockCounter = 0;
-
+    public boolean invincible = false;
+    public int invicibleCounter = 0;
+    public int type;//0 = player,1= npc,2 = monster
     //FOR MANAGING DIALOGUES
     String dialogue[] = new String[20];//dialogue for npc's
     int dialogueIndex = 0;//responsible for rendering multiple dialogues
@@ -74,14 +76,25 @@ public class Entity {
    collisionOn = false;
    gp.cChecker.checkTile(this);
    gp.cChecker.checkObject(this,false);
-   gp.cChecker.checkPlayer(this);
+   gp.cChecker.checkEntity(this,gp.npc);
+   gp.cChecker.checkEntity(this,gp.monster);
+   boolean contactPlayer = gp.cChecker.checkPlayer(this);
+   if(this.type == 2 && contactPlayer)
+   {
+    if(!gp.player.invincible)
+    {
+     //we can give damage
+     gp.player.life-=1;
+     gp.player.invincible = true;
+    }
+   }
    if (!collisionOn) {
 
     switch (direction) {
-     case "up" -> worldY -= playerSpeed;
-     case "down" -> worldY += playerSpeed;
-     case "left" -> worldX -= playerSpeed;
-     case "right" -> worldX += playerSpeed;
+     case "up" -> worldY -= speed;
+     case "down" -> worldY += speed;
+     case "left" -> worldX -= speed;
+     case "right" -> worldX += speed;
     }
    }
 

@@ -46,9 +46,11 @@ player is in center of the screen and background is moving
     public void setDefaultValues()
     {
         //player position in world map
-        worldX = gp.TILE_SIZE * 23;//1104px 23 is arbitrary no. use for initial position
-        worldY = gp.TILE_SIZE * 21;//1008px similarly 21 is arbitrary no.
-        playerSpeed = 4;
+//        worldX = gp.TILE_SIZE * 23;//1104px 23 is arbitrary no. use for initial position
+//        worldY = gp.TILE_SIZE * 21;//1008px similarly 21 is arbitrary no.
+        worldX = gp.TILE_SIZE*10;
+        worldY = gp.TILE_SIZE*9;
+        speed = 4;
         direction = "left";
 
 //        Player Status
@@ -103,14 +105,18 @@ player is in center of the screen and background is moving
             pickUpObject(objIndex);
 
 
+            //CHECK MONSTER COLLISION
+            int monsterIndex = gp.cChecker.checkEntity(this,gp.monster);
+            contactMonster(monsterIndex);
+
             //if collision is false player can move
             if (!collisionOn) {
 
                 switch (direction) {
-                    case "up" -> worldY -= playerSpeed;
-                    case "down" -> worldY += playerSpeed;
-                    case "left" -> worldX -= playerSpeed;
-                    case "right" -> worldX += playerSpeed;
+                    case "up" -> worldY -= speed;
+                    case "down" -> worldY += speed;
+                    case "left" -> worldX -= speed;
+                    case "right" -> worldX += speed;
                 }
             }
         }
@@ -125,7 +131,15 @@ player is in center of the screen and background is moving
 
             spriteCounter = 0;
         }
-
+        if(invincible)
+        {
+            invicibleCounter++;
+            if(invicibleCounter>60)
+            {
+                invincible = false;
+                invicibleCounter=0;
+            }
+        }
     }
     public void pickUpObject(int i)
     {
@@ -144,6 +158,19 @@ player is in center of the screen and background is moving
             {
                 gp.gameState = gp.dialogueState;
                 gp.npc[i].speak();
+            }
+
+        }
+    }
+    public void contactMonster(int i )
+    {
+        if(i!=999)//player touches monster
+        {
+            if(invincible == false)
+            {
+                System.out.println("player touched monster");
+                life-=1;
+                invincible = true;
             }
 
         }
@@ -177,12 +204,22 @@ player is in center of the screen and background is moving
                 if (spriteNum == 2) image = stand2;
             }
         }
+        if(invincible)
+        {
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3f));
+        }
         g2d.drawImage(image,screenX,screenY,null);//the position of the
         // player does not change
-
+        //RESET
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
         //PLAYER COLLISION CHECKER
 //        g2d.setColor(Color.red);
 //        g2d.drawRect(screenX+solidArea.x,screenY+solidArea.y,solidArea.width,solidArea.height);
+
+        //DEBUG
+//        g2d.setFont(new Font("Arial",Font.PLAIN,26));
+//        g2d.setColor(Color.white);
+//        g2d.drawString("Invincible"+invicibleCounter,10,400);
 
     }
 }

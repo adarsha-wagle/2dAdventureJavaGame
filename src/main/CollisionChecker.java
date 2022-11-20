@@ -22,7 +22,7 @@ public class CollisionChecker {
         int tileNum1,tileNum2;
         switch (entity.direction) {
             case "up" -> {
-                entityTopRow = (entityTopWorldY - entity.playerSpeed) / gamePanel.TILE_SIZE;
+                entityTopRow = (entityTopWorldY - entity.speed) / gamePanel.TILE_SIZE;
                 tileNum1 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityTopRow];
                 tileNum2 = gamePanel.tileManager.mapTileNum[entityRightCol][entityTopRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision)//if player is in two tile that are solid then stop movement
@@ -31,7 +31,7 @@ public class CollisionChecker {
                 }
             }
             case "down" -> {
-                entityBottomRow = (entityBottomWorldY + entity.playerSpeed) / gamePanel.TILE_SIZE;
+                entityBottomRow = (entityBottomWorldY + entity.speed) / gamePanel.TILE_SIZE;
                 tileNum1 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityBottomRow];
                 tileNum2 = gamePanel.tileManager.mapTileNum[entityRightCol][entityBottomRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision)//if player is in two tile that are solid then stop movement
@@ -40,7 +40,7 @@ public class CollisionChecker {
                 }
             }
             case "right" -> {
-                entityRightCol = (entityRightWorldX + entity.playerSpeed) / gamePanel.TILE_SIZE;
+                entityRightCol = (entityRightWorldX + entity.speed) / gamePanel.TILE_SIZE;
                 tileNum1 = gamePanel.tileManager.mapTileNum[entityRightCol][entityTopRow];
                 tileNum2 = gamePanel.tileManager.mapTileNum[entityRightCol][entityBottomRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision)//if player is in two tile that are solid then stop movement
@@ -49,7 +49,7 @@ public class CollisionChecker {
                 }
             }
             case "left" -> {
-                entityLeftCol = (entityLeftWorldX - entity.playerSpeed) / gamePanel.TILE_SIZE;
+                entityLeftCol = (entityLeftWorldX - entity.speed) / gamePanel.TILE_SIZE;
                 tileNum1 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityTopRow];
                 tileNum2 = gamePanel.tileManager.mapTileNum[entityLeftCol][entityBottomRow];
                 if (gamePanel.tileManager.tile[tileNum1].collision || gamePanel.tileManager.tile[tileNum2].collision)//if player is in two tile that are solid then stop movement
@@ -76,16 +76,16 @@ public class CollisionChecker {
                 switch(entity.direction)
                 {
                     case "up":
-                        entity.solidArea.y-=entity.playerSpeed;
+                        entity.solidArea.y-=entity.speed;
                         break;
                     case "down":
-                        entity.solidArea.y += entity.playerSpeed;
+                        entity.solidArea.y += entity.speed;
                         break;
                     case "left":
-                        entity.solidArea.x-=entity.playerSpeed;
+                        entity.solidArea.x-=entity.speed;
                         break;
                     case "right":
-                        entity.solidArea.x+=entity.playerSpeed;
+                        entity.solidArea.x+=entity.speed;
                         break;
                 }
                 if(entity.solidArea.intersects(gamePanel.obj[i].solidArea))
@@ -125,28 +125,26 @@ public class CollisionChecker {
                 switch(entity.direction)
                 {
                     case "up":
-                        entity.solidArea.y-=entity.playerSpeed;
+                        entity.solidArea.y-=entity.speed;
                         break;
                     case "down":
-                        entity.solidArea.y += entity.playerSpeed;
+                        entity.solidArea.y += entity.speed;
                         break;
                     case "left":
-                        entity.solidArea.x-=entity.playerSpeed;
+                        entity.solidArea.x-=entity.speed;
                         break;
                     case "right":
-                        entity.solidArea.x+=entity.playerSpeed;
+                        entity.solidArea.x+=entity.speed;
                         break;
                 }
                 if(entity.solidArea.intersects(target[i].solidArea))
                 {
 //                    System.out.println("collided to the object");
-
-                        entity.collisionOn = true;
-                        index = i;//if it is player we return i
-
-
-
-
+                        if(target[i]!=entity)
+                        {
+                            entity.collisionOn = true;
+                            index = i;//if it is player we return i
+                        }
                 }
                 entity.solidArea.x = entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.solidAreaDefaultY;
@@ -156,8 +154,9 @@ public class CollisionChecker {
         }
         return index;
     }
-    public void checkPlayer(Entity entity)
+    public boolean checkPlayer(Entity entity)
     {
+        boolean contactPlayer = false;
         //get entity's solid area position
         entity.solidArea.x = entity.worldX + entity.solidArea.x;
         entity.solidArea.y = entity.worldY + entity.solidArea.y;
@@ -168,29 +167,30 @@ public class CollisionChecker {
         switch(entity.direction)
         {
             case "up":
-                entity.solidArea.y-=entity.playerSpeed;
+                entity.solidArea.y-=entity.speed;
                 break;
             case "down":
-                entity.solidArea.y += entity.playerSpeed;
+                entity.solidArea.y += entity.speed;
                 break;
             case "left":
-                entity.solidArea.x-=entity.playerSpeed;
+                entity.solidArea.x-=entity.speed;
                 break;
             case "right":
-                entity.solidArea.x+=entity.playerSpeed;
+                entity.solidArea.x+=entity.speed;
                 break;
         }
         if(entity.solidArea.intersects(gamePanel.player.solidArea))
         {
 //                    System.out.println("collided to the object");
-
             entity.collisionOn = true;
+            contactPlayer = true;
 
         }
         entity.solidArea.x = entity.solidAreaDefaultX;
         entity.solidArea.y = entity.solidAreaDefaultY;
         gamePanel.player.solidArea.x = gamePanel.player.solidAreaDefaultX;
         gamePanel.player.solidArea.y = gamePanel.player.solidAreaDefaultY;
+        return contactPlayer;
     }
 
 }
