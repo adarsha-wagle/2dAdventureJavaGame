@@ -28,7 +28,7 @@ public class Entity {
     public int type;//0 = player,1= npc,2 = monster
     //FOR MANAGING DIALOGUES
     String dialogue[] = new String[20];//dialogue for npc's
-    int dialogueIndex = 0;//responsible for rendering multiple dialogues
+    public int dialogueIndex = 0;//responsible for rendering multiple dialogues
 
    //CHARACTER HEALTH
  public int maxLife;
@@ -50,6 +50,7 @@ public class Entity {
    {
     dialogueIndex = 0;
    }
+
    gp.ui.currentDialogue = dialogue[dialogueIndex];
    dialogueIndex++;
    //changing the npc direction on the basis of player direction

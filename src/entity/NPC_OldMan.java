@@ -28,12 +28,13 @@ public class NPC_OldMan extends Entity {
     //Responsible for npc dialogue
     public void setDialogue()
     {
-        dialogue[0] = "Hello, lad.";
+        dialogue[0] = "Hello, lad!!";
         dialogue[1] = "So you've come to this island \n to find the treasure?";
         dialogue[2] = "I used to be a mighty wizard but now... \nI'm cursed to go out";
         dialogue[3] = "Well, good luck on you.";
     }
 //    CHARACTER BEHAVIOUR
+    //AI OF NPC OLD MAN
     public void setAction() {
         actionLockCounter++;
         if (actionLockCounter == 120) {

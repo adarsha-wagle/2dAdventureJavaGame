@@ -105,6 +105,12 @@ public class KeyHandler implements KeyListener {
             {
                 gp.gameState = gp.playState;
             }
+            if(e.getKeyCode()== KeyEvent.VK_T)
+            {
+                gp.npc[0].speak();
+                System.out.println("k pressed");
+            }
+
         }
     }
 

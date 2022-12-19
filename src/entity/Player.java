@@ -74,7 +74,8 @@ player is in center of the screen and background is moving
 
     public void update()//responsible for changing player position
     {
-        if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed) {
+
+        if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed||keyH.talkPressed) {
             if (keyH.upPressed) {
 
                 direction = "up";
@@ -110,7 +111,7 @@ player is in center of the screen and background is moving
             contactMonster(monsterIndex);
 
             //if collision is false player can move
-            if (!collisionOn) {
+            if (!collisionOn && keyH.talkPressed == false) {
 
                 switch (direction) {
                     case "up" -> worldY -= speed;
@@ -123,7 +124,7 @@ player is in center of the screen and background is moving
         else {
             direction = "stand";
         }
-
+        gp.keyH.talkPressed = false;
         spriteCounter++;
         if(spriteCounter > 12)
         {
@@ -154,9 +155,12 @@ player is in center of the screen and background is moving
         if(i!=999)
         {
             System.out.println("Hitting npc");
+            System.out.println("Key pressed "+gp.keyH.talkPressed );
             if(gp.keyH.talkPressed)
             {
+
                 gp.gameState = gp.dialogueState;
+                System.out.println("i "+i);
                 gp.npc[i].speak();
             }
 
@@ -213,8 +217,8 @@ player is in center of the screen and background is moving
         //RESET
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
         //PLAYER COLLISION CHECKER
-//        g2d.setColor(Color.red);
-//        g2d.drawRect(screenX+solidArea.x,screenY+solidArea.y,solidArea.width,solidArea.height);
+        g2d.setColor(Color.red);
+        g2d.drawRect(screenX+solidArea.x,screenY+solidArea.y,solidArea.width,solidArea.height);
 
         //DEBUG
 //        g2d.setFont(new Font("Arial",Font.PLAIN,26));

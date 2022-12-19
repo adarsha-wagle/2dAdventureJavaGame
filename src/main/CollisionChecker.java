@@ -116,8 +116,8 @@ public class CollisionChecker {
            if( target[i]!=null)
             {
                 //get entity's solid area position
-                entity.solidArea.x = entity.worldX + entity.solidArea.x;
-                entity.solidArea.y = entity.worldY + entity.solidArea.y;
+                entity.solidArea.x = entity.worldX + entity.solidArea.x+5;
+                entity.solidArea.y = entity.worldY + entity.solidArea.y+5;
                 //get the object's solid area position
                 target[i].solidArea.x = target[i].worldX + target[i].solidArea.x;
                 target[i].solidArea.y = target[i].worldY + target[i].solidArea.y;
@@ -152,6 +152,7 @@ public class CollisionChecker {
                 target[i].solidArea.y = target[i].solidAreaDefaultY;
             }
         }
+
         return index;
     }
     public boolean checkPlayer(Entity entity)
@@ -181,7 +182,6 @@ public class CollisionChecker {
         }
         if(entity.solidArea.intersects(gamePanel.player.solidArea))
         {
-//                    System.out.println("collided to the object");
             entity.collisionOn = true;
             contactPlayer = true;
 
