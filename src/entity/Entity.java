@@ -12,6 +12,7 @@ public class Entity {
  GamePanel gp;
    public int worldX ,worldY, speed;//worldX to
     public BufferedImage up1,up2,down1,down2,right1,right2,left1,left2,stand1,stand2;
+    public BufferedImage attackUp1,attackUp2,attackDown1,attackDown2,attackLeft1,attackLeft2,attackRight1,attackRight2;
     public String direction = "down";//player direction
 
     //for player animation
@@ -19,11 +20,12 @@ public class Entity {
     public int spriteNum = 1;
 
     public Rectangle solidArea = new Rectangle( 0,0,48,48);//default collision box
-
+    public Rectangle attackArea  =new Rectangle(0,0,0,0);
     public int solidAreaDefaultX,solidAreaDefaultY;
     public boolean collisionOn = false;
     public int actionLockCounter = 0;
     public boolean invincible = false;
+    public boolean attacking = false;
     public int invicibleCounter = 0;
     public int type;//0 = player,1= npc,2 = monster
     //FOR MANAGING DIALOGUES
@@ -99,26 +101,32 @@ public class Entity {
     }
    }
 
-
-
-
  spriteCounter++;
         if(spriteCounter > 12) {
          spriteNum = spriteNum == 1 ? 2 : 1;
 
          spriteCounter = 0;
         }
+   if(invincible)
+   {
+    invicibleCounter++;
+    if(invicibleCounter>40)
+    {
+     invincible = false;
+     invicibleCounter=0;
+    }
+   }
  }
 
 
- public BufferedImage setupImage(String imagePath)
+ public BufferedImage setupImage(String imagePath,int width,int height)
  {
   UtilityTool uTool = new UtilityTool();
   BufferedImage image = null;
   try
   {
    image = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(imagePath+".png")));
-   image = uTool.scaledImage(image,gp.TILE_SIZE,gp.TILE_SIZE);
+   image = uTool.scaledImage(image,width,height);
   }
   catch(Exception e)
   {
@@ -158,7 +166,14 @@ public class Entity {
      if (spriteNum == 2) image = stand2;
     }
    }
+   if(invincible)
+   {
+    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+   }
    g2.drawImage(image, screenX, screenY, gp.TILE_SIZE, gp.TILE_SIZE, null);
+   //reset transparency
+   g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
+
   }
  }
 }

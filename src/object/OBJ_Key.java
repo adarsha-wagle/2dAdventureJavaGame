@@ -14,7 +14,7 @@ public class OBJ_Key extends Entity {
         super(gp);
 
         name = "Key";
-        down1 = setupImage("objects/key");//scaling image
+        down1 = setupImage("objects/key",gp.TILE_SIZE,gp.TILE_SIZE);//scaling image
 
     }
 }

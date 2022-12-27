@@ -17,7 +17,7 @@ player is in center of the screen and background is moving
     public final  int screenX;
     public final int screenY;
 
-
+    int standCounter = 0;
     KeyHandler keyH;
 
     //FOR BOOT POWER
@@ -26,7 +26,7 @@ player is in center of the screen and background is moving
 
     public Player(GamePanel gP,KeyHandler keyH){
         super(gP);
-
+        this.gp = gP;
 
         this.keyH = keyH;
         screenX = gp.SCREEN_WIDTH/2-(gp.TILE_SIZE/2);//768/2-24 = 360pixel
@@ -40,8 +40,13 @@ player is in center of the screen and background is moving
         solidAreaDefaultY = solidArea.y;
         solidArea.width = 28;
         solidArea.height = 28;
+
+        //Change this number if you want to change attacking range
+        attackArea.width = 36;
+        attackArea.height = 36;
         setDefaultValues();
         getPlayerImage();
+        getPlayerAttackImage();
     }
     public void setDefaultValues()
     {
@@ -60,39 +65,56 @@ player is in center of the screen and background is moving
     public void getPlayerImage()
     {
 
-        stand1 = setupImage("player/boy_stand_1");
-        stand2 = setupImage("player/boy_stand_2");
-        up1 = setupImage("player/boy_up_1");
-        up2 = setupImage("player/boy_up_2");
-        down1 = setupImage("player/boy_down_1");
-        down2 = setupImage("player/boy_down_2");
-        left1 = setupImage("player/boy_left_1");
-        left2 = setupImage("player/boy_left_2");
-        right1 = setupImage("player/boy_right_1");
-        right2 = setupImage("player/boy_right_2");
+        stand1 = setupImage("player/boy_stand_1",gp.TILE_SIZE,gp.TILE_SIZE);
+        stand2 = setupImage("player/boy_stand_2",gp.TILE_SIZE,gp.TILE_SIZE);
+        up1 = setupImage("player/boy_up_1",gp.TILE_SIZE,gp.TILE_SIZE);
+        up2 = setupImage("player/boy_up_2",gp.TILE_SIZE,gp.TILE_SIZE);
+        down1 = setupImage("player/boy_down_1",gp.TILE_SIZE,gp.TILE_SIZE);
+        down2 = setupImage("player/boy_down_2",gp.TILE_SIZE,gp.TILE_SIZE);
+        left1 = setupImage("player/boy_left_1",gp.TILE_SIZE,gp.TILE_SIZE);
+        left2 = setupImage("player/boy_left_2",gp.TILE_SIZE,gp.TILE_SIZE);
+        right1 = setupImage("player/boy_right_1",gp.TILE_SIZE,gp.TILE_SIZE);
+        right2 = setupImage("player/boy_right_2",gp.TILE_SIZE,gp.TILE_SIZE);
+    }
+    public void getPlayerAttackImage()
+    {
+        attackUp1 = setupImage("player/boy_attack_up_1",gp.TILE_SIZE,gp.TILE_SIZE*2);
+        attackUp2 = setupImage("player/boy_attack_up_2",gp.TILE_SIZE,gp.TILE_SIZE*2);
+        attackDown1 = setupImage("player/boy_attack_down_1",gp.TILE_SIZE,gp.TILE_SIZE*2);
+        attackDown2= setupImage("player/boy_attack_down_2",gp.TILE_SIZE,gp.TILE_SIZE*2);
+        attackLeft1 = setupImage("player/boy_attack_left_1",gp.TILE_SIZE*2,gp.TILE_SIZE);
+        attackLeft2 = setupImage("player/boy_attack_left_2",gp.TILE_SIZE*2,gp.TILE_SIZE);
+        attackRight1 = setupImage("player/boy_attack_right_1",gp.TILE_SIZE*2,gp.TILE_SIZE);
+        attackRight2 = setupImage("player/boy_attack_right_2",gp.TILE_SIZE*2,gp.TILE_SIZE);
     }
 
     public void update()//responsible for changing player position
     {
+        if(attacking)//if player is attacking
+        {
+            handleAttack();
+        }
 
-        if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed||keyH.talkPressed) {
+        if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed||keyH.talkPressed||keyH.mousePressed) {
             if (keyH.upPressed) {
 
                 direction = "up";
-            }  if (keyH.downPressed) {
+            }
+            if (keyH.downPressed) {
                 direction = "down";
-            }  if (keyH.leftPressed) {
+            }
+            if (keyH.leftPressed) {
                 direction = "left";
-
-
-            }  if (keyH.rightPressed) {
+            }
+            if (keyH.rightPressed) {
                 direction = "right";
             }
             //CHECK TILE COLLISION
             collisionOn = false;
             gp.cChecker.checkTile(this);
+
             //CHECK NPC COLLISION
-            int npcIndex = gp.cChecker.checkEntity(this,gp.npc);
+            int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
             interactNPC(npcIndex);
 
             //CHECK EVENT
@@ -101,17 +123,15 @@ player is in center of the screen and background is moving
             gp.keyH.enterPressed = false;
 
 
-            //CHECK OBJECT COLLISION
-            int objIndex = gp.cChecker.checkObject(this,true);
+            //  CHECK OBJECT COLLISION
+            int objIndex = gp.cChecker.checkObject(this, true);
             pickUpObject(objIndex);
-
-
             //CHECK MONSTER COLLISION
-            int monsterIndex = gp.cChecker.checkEntity(this,gp.monster);
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
             contactMonster(monsterIndex);
 
             //if collision is false player can move
-            if (!collisionOn && keyH.talkPressed == false) {
+            if (!collisionOn && keyH.talkPressed == false && !attacking) {
 
                 switch (direction) {
                     case "up" -> worldY -= speed;
@@ -120,17 +140,24 @@ player is in center of the screen and background is moving
                     case "right" -> worldX += speed;
                 }
             }
+
+
+            gp.keyH.talkPressed = false;
+            spriteCounter++;
+            if (spriteCounter > 12) {
+                spriteNum = spriteNum == 1 ? 2 : 1;
+
+                spriteCounter = 0;
+            }
         }
         else {
-            direction = "stand";
-        }
-        gp.keyH.talkPressed = false;
-        spriteCounter++;
-        if(spriteCounter > 12)
-        {
-            spriteNum = spriteNum == 1?2:1;
-
-            spriteCounter = 0;
+//            direction = "stand";//TODO disable if player has weapon and enable if player doesnot have weapon
+            standCounter++;
+            if(standCounter == 20)
+            {
+                spriteNum = 1;
+                standCounter = 0;
+            }
         }
         if(invincible)
         {
@@ -142,6 +169,51 @@ player is in center of the screen and background is moving
             }
         }
     }
+    public void handleAttack()//attacking
+    {
+        spriteCounter++;
+        if(spriteCounter <= 5)
+        {
+            spriteNum = 1;
+        }
+        if(spriteCounter>5 && spriteCounter <= 20)
+        {
+            spriteNum = 2;
+
+            //save the current worldX,worldY,solidArea
+            int currentWorldX  = worldX;
+            int currentWorldY = worldY;
+            int solidAreaWidth = solidArea.width;
+            int solidAreaHeight = solidArea.height;
+
+            //Adjust player's worldX/Y for thie attack Area
+            switch(direction)
+            {
+                case "up" :worldY -= attackArea.height ;break;
+                case "down":worldY+= attackArea.height;break;
+                case "left":worldX-= attackArea.width;break;
+                case "right":worldX+= attackArea.width;break;
+            }
+            //attackArea becomes solidArea
+            solidArea.width = attackArea.width;
+            solidArea.height = attackArea.height;
+            //Check monster collision with the updated worldX,worldY and solidArea
+            int monsterIndex = gp.cChecker.checkEntity(this,gp.monster);
+            damageMonster(monsterIndex);
+            worldX = currentWorldX;
+            worldY = currentWorldY;
+            solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
+        }
+        if(spriteCounter>20)
+        {
+            System.out.println("came");
+            spriteCounter = 0;
+            spriteNum = 1;
+            attacking = false;
+        }
+        System.out.println(spriteCounter);
+    }
     public void pickUpObject(int i)
     {
         if(i!=999)//if index is 999 then we have not touched anything
@@ -152,19 +224,22 @@ player is in center of the screen and background is moving
     }
     public void interactNPC(int i)
     {
-        if(i!=999)
-        {
-            System.out.println("Hitting npc");
-            System.out.println("Key pressed "+gp.keyH.talkPressed );
-            if(gp.keyH.talkPressed)
-            {
+        if(i!=999) {
+//            System.out.println("Hitting npc");
+//            System.out.println("Key pressed " + gp.keyH.talkPressed);
+            if (gp.keyH.talkPressed) {
 
                 gp.gameState = gp.dialogueState;
-                System.out.println("i "+i);
+                System.out.println("i " + i);
                 gp.npc[i].speak();
             }
 
         }
+        if(gp.keyH.mousePressed)
+        {
+            attacking = true;
+        }
+
     }
     public void contactMonster(int i )
     {
@@ -179,6 +254,26 @@ player is in center of the screen and background is moving
 
         }
     }
+    public void damageMonster(int i )
+    {
+        if (i!=999)
+        {
+//            System.out.println("Hit");
+            if(gp.monster[i].invincible == false)
+            {
+                gp.monster[i].life -=1;
+                gp.monster[i].invincible = true;
+                if(gp.monster[i].life<=0)
+                {
+                    gp.monster[i] = null;
+                }
+            }
+        }
+//        else
+//        {
+//            System.out.println("miss");
+//        }
+    }
     public void draw(Graphics2D g2d)
     {
        /* g2d.setColor(Color.white);
@@ -186,33 +281,72 @@ player is in center of the screen and background is moving
         */
 
         BufferedImage image = null;
+        int tempScreenX = screenX;
+        int tempScreenY = screenY;
         switch (direction) {
             case "up" -> {
-                if (spriteNum == 1) image = up1;
-                if (spriteNum == 2) image = up2;
+                 if(attacking)
+                 {
+                     tempScreenY = screenY - gp.TILE_SIZE;
+                     if(spriteNum == 1) image = attackUp1;
+                     if(spriteNum == 2) image = attackUp2;
+                 }
+             if(!attacking) {
+                     if (spriteNum == 1) image = up1;
+                     if (spriteNum == 2) image = up2;
+                 }
+
             }
             case "down" -> {
-                if (spriteNum == 1) image = down1;
-                if (spriteNum == 2) image = down2;
+                if (attacking) {
+                    if (spriteNum == 1) image = attackDown1;
+                    if (spriteNum == 2) image = attackDown2;
+                } if(!attacking) {
+                    if (spriteNum == 1) image = down1;
+                    if (spriteNum == 2) image = down2;
+                }
             }
             case "left" -> {
-                if (spriteNum == 1) image = left1;
-                if (spriteNum == 2) image = left2;
+                if (attacking) {
+                    tempScreenX = screenX - gp.TILE_SIZE;
+                    if (spriteNum == 1) image = attackLeft1;
+                    if (spriteNum == 2) image = attackLeft2;
+                } if(!attacking) {
+                    if (spriteNum == 1) image = left1;
+                    if (spriteNum == 2) image = left2;
+                }
             }
             case "right" -> {
-                if (spriteNum == 1) image = right1;
-                if (spriteNum == 2) image = right2;
+                if (attacking) {
+                    if (spriteNum == 1) image = attackRight1;
+                    if (spriteNum == 2) image = attackRight2;
+                } if(!attacking) {
+                    if (spriteNum == 1) image = right1;
+                    if (spriteNum == 2) image = right2;
+                }
             }
             case "stand" ->{
+                if(!attacking)
+                {
+
                 if (spriteNum == 1) image = stand1;
                 if (spriteNum == 2) image = stand2;
+                }
+                if(attacking)
+                {
+                    if(spriteNum == 1) image = attackDown1;
+                    if(spriteNum == 2) image = attackDown2;
+                }
+
             }
         }
+        System.out.println("a"+attacking);
+        System.out.println(gp.keyH.mousePressed);
         if(invincible)
         {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3f));
         }
-        g2d.drawImage(image,screenX,screenY,null);//the position of the
+        g2d.drawImage(image,tempScreenX,tempScreenY,null);//the position of the
         // player does not change
         //RESET
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));

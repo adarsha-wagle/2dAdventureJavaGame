@@ -12,7 +12,7 @@ public class OBJ_Boots extends Entity {
     {
         super(gp);
         name = "Boots";
-        down1 = setupImage("objects/boots");
+        down1 = setupImage("objects/boots",gp.TILE_SIZE,gp.TILE_SIZE);
 
     }
 }

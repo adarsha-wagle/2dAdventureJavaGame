@@ -84,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);//if set to true, all the drawing from this component done in an offscreen painting buffer//for better rendering performance
 
         this.addKeyListener(keyH);
+        this.addMouseListener(keyH);
         this.setFocusable(true);//game panel is focused to get key input
     }
     public void setupGame()
@@ -125,6 +126,7 @@ public class GamePanel extends JPanel implements Runnable{
     }
     public void update()//responsible for changing player position
     {
+
         if(gameState == playState)
         {
 
