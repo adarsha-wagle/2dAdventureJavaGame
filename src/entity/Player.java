@@ -237,6 +237,7 @@ player is in center of the screen and background is moving
         }
         if(gp.keyH.mousePressed)
         {
+            gp.playSE(7);
             attacking = true;
         }
 
@@ -261,11 +262,13 @@ player is in center of the screen and background is moving
 //            System.out.println("Hit");
             if(gp.monster[i].invincible == false)
             {
+                gp.playSE(8);
                 gp.monster[i].life -=1;
                 gp.monster[i].invincible = true;
+                gp.monster[i].damageReaction();
                 if(gp.monster[i].life<=0)
                 {
-                    gp.monster[i] = null;
+                    gp.monster[i].dying = true;
                 }
             }
         }

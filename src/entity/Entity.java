@@ -16,7 +16,7 @@ public class Entity {
     public String direction = "down";//player direction
 
     //for player animation
-    public int spriteCounter = 0;
+
     public int spriteNum = 1;
 
     public Rectangle solidArea = new Rectangle( 0,0,48,48);//default collision box
@@ -26,7 +26,14 @@ public class Entity {
     public int actionLockCounter = 0;
     public boolean invincible = false;
     public boolean attacking = false;
+    public boolean alive = true;
+    public boolean dying = false;
+    boolean hpBarOn = false;
+    //COUNTER
     public int invicibleCounter = 0;
+    int dyingCounter = 0;
+    int hpBarCounter = 0;
+ public int spriteCounter = 0;
     public int type;//0 = player,1= npc,2 = monster
     //FOR MANAGING DIALOGUES
     String dialogue[] = new String[20];//dialogue for npc's
@@ -47,6 +54,7 @@ public class Entity {
   {
 
   }
+  public void damageReaction(){}
   public void speak(){
    if(dialogue[dialogueIndex]==null)//if dialogue reaches the maximum index then reset index to zero
    {
@@ -84,6 +92,7 @@ public class Entity {
    boolean contactPlayer = gp.cChecker.checkPlayer(this);
    if(this.type == 2 && contactPlayer)
    {
+    gp.playSE(6);
     if(!gp.player.invincible)
     {
      //we can give damage
@@ -166,14 +175,73 @@ public class Entity {
      if (spriteNum == 2) image = stand2;
     }
    }
+   //Monster HP Bar
+   if(type == 2 && hpBarOn)
+   {
+    double oneScale = (double) gp.TILE_SIZE/maxLife;
+    double hpBarValue = oneScale * life;
+   g2.setColor(new Color(35,35,35));
+   g2.fillRect(screenX-1,screenY-16,gp.TILE_SIZE+2,12);
+   g2.setColor(new Color(255,0,30));
+   g2.fillRect(screenX,screenY-15,(int)hpBarValue,10);
+   hpBarCounter++;
+   if(hpBarCounter>600)//after 10 sec the bar disappears
+   {
+    hpBarCounter = 0;
+    hpBarOn = false;
+   }
+   }
    if(invincible)
    {
-    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+    hpBarOn = true;
+    hpBarCounter = 0;
+    changeAlpha(g2,0.4f);
+   }
+   if(dying)
+   {
+    dyingAnimation(g2);
    }
    g2.drawImage(image, screenX, screenY, gp.TILE_SIZE, gp.TILE_SIZE, null);
    //reset transparency
-   g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
-
+changeAlpha(g2,1f);
   }
+ }
+ public void dyingAnimation(Graphics2D g2)
+ {
+   dyingCounter++;
+   if(dyingCounter<=5)
+   {changeAlpha(g2,0f);
+   }
+   if(dyingCounter>5 && dyingCounter<=10)
+   {
+      changeAlpha(g2,1f);
+   }
+   if(dyingCounter>10 && dyingCounter<=15)
+   {
+    changeAlpha(g2,0f);
+   }
+   if(dyingCounter>15 && dyingCounter<=20)
+   {
+    changeAlpha(g2,1f);
+   }
+   if(dyingCounter>20 && dyingCounter<=25)
+   {
+    changeAlpha(g2,0f);
+   }if(dyingCounter>25 && dyingCounter<=30)
+   {
+    changeAlpha(g2,1f);
+   }if(dyingCounter>30 && dyingCounter<=40)
+   {
+    changeAlpha(g2,0f);
+   }if(dyingCounter>40)
+   {
+    dying = false;
+    alive = false;
+   }
+ }
+ public void changeAlpha(Graphics2D g2,float value)
+ {
+  g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,value));
+
  }
 }
