@@ -331,7 +331,6 @@ player is in center of the screen and background is moving
             case "stand" ->{
                 if(!attacking)
                 {
-
                 if (spriteNum == 1) image = stand1;
                 if (spriteNum == 2) image = stand2;
                 }
