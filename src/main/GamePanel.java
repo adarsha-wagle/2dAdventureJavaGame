@@ -76,7 +76,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int playState = 1;
     public final int pauseState = 2;
     public final int dialogueState = 3;
-
+    public final int characterState = 4;
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
@@ -167,7 +167,9 @@ public class GamePanel extends JPanel implements Runnable{
         //TITLE SCREEN
         if (gameState == titleState) {
                 ui.draw(g2d);
-        } else {
+        }
+
+        else {
             //Tile
             tileManager.draw(g2d);
             //ADDING ENTITIES TO THE LIST

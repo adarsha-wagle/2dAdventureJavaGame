@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeoutException;
 
 public class UI  {
     GamePanel gp;
@@ -67,6 +68,7 @@ public class UI  {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(Color.white);
 
+        System.out.println(gp.gameState);
         //Title State
         if(gp.gameState == gp.titleState)
         {
@@ -88,6 +90,108 @@ public class UI  {
         {      drawPlayerLife();
             drawDialogueScreen();
         }
+        //CHARACTER STATE
+        if(gp.gameState == gp.characterState)
+        {
+            System.out.println("c");
+            drawCharacterScreen();
+        }
+    }
+    public void drawCharacterScreen()
+    {
+        //Create A Frame
+        final int frameX = gp.TILE_SIZE ;
+        final int frameY = gp.TILE_SIZE * 2;
+        final int frameWidth = gp.TILE_SIZE *5;
+        final int frameHeight = gp.TILE_SIZE * 10;
+        drawSubWindow(frameX,frameY,frameWidth,frameHeight);
+
+        //TEXT
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(32F));
+        int textX = frameX + 20;
+        int textY = frameY  + gp.TILE_SIZE;
+        final int lineHeight  = 32;
+
+        //NAMES:LEFT SIDE
+        g2.drawString("Level",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Life",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Stream",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Dexterity",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Attack",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Defense",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Exp",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Next Level",textX,textY);
+        textY+=lineHeight;
+        g2.drawString("Coin",textX,textY);
+        textY+=lineHeight+25;
+        g2.drawString("Weapon",textX,textY);
+        textY+=lineHeight+15;
+        g2.drawString("Shield",textX,textY);
+
+        //VALUES: RIGHT SIDE
+        int tailX = (frameX + frameWidth)-30;
+        //reset texty
+        textY  = frameY + gp.TILE_SIZE;
+        String value;
+        value = String.valueOf(gp.player.level);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+        textY+=lineHeight;
+
+        value = String.valueOf(gp.player.life + "/"+gp.player.maxLife);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+        textY+=lineHeight;
+
+        value = String.valueOf(gp.player.strength);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+
+        textY+=lineHeight;
+        value = String.valueOf(gp.player.dexterity);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+
+        textY+=lineHeight;
+        value = String.valueOf(gp.player.attack);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+
+        textY+=lineHeight;
+        value = String.valueOf(gp.player.defense);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+
+        textY+=lineHeight;
+        value = String.valueOf(gp.player.exp);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+
+        textY+=lineHeight;
+        value = String.valueOf(gp.player.nextLevelExp);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+
+        textY+=lineHeight;
+        value = String.valueOf(gp.player.coin);
+        textX = getXforAlignToRightText(value,tailX);
+        g2.drawString(value,textX,textY);
+
+        textY+=lineHeight;
+        g2.drawImage(gp.player.currentWeapon.down1,tailX-gp.TILE_SIZE,textY-10,null);
+        textY+=gp.TILE_SIZE;
+        g2.drawImage(gp.player.currentShield.down1,tailX-gp.TILE_SIZE,textY-10,null);
+
+        textY+=lineHeight+40;
+        g2.drawString("Press 'c' to exit",frameX+25,textY);
     }
     public void drawPlayerLife()
     {
@@ -207,6 +311,13 @@ public class UI  {
     {
         int length = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
         int  x = gp.SCREEN_WIDTH/2-length/2;
+
+        return x;
+    }
+ public int getXforAlignToRightText(String text,int tailX)
+    {
+        int length = (int)g2.getFontMetrics().getStringBounds(text,g2).getWidth();
+        int  x = tailX - length;
 
         return x;
     }

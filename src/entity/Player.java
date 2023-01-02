@@ -2,6 +2,8 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.OBJ_Shield_Wood;
+import object.OBJ_Sword_Normal;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -59,8 +61,26 @@ player is in center of the screen and background is moving
         direction = "left";
 
 //        Player Status
+        level = 1;
         maxLife = 6;//1 life = half heart
         life = maxLife;//player current life
+        strength = 1;//the more strength he has, the more damage he gives
+        dexterity = 1;//the more dexterity he has, the less damage he receives.
+        exp = 0;
+        nextLevelExp = 5;//how much experience you need to level up
+        coin = 0;
+        currentWeapon = new OBJ_Sword_Normal(gp);
+        currentShield = new OBJ_Shield_Wood(gp);
+        attack  = getAttack();//the total attack value is decided by strength and weapon
+        defense = getDefense();//the total defense value is decided by dexterity and shield
+    }
+    public int getAttack()
+    {
+        return attack = strength * currentWeapon.attackValue;
+    }
+    public int getDefense()
+    {
+        return defense = dexterity * currentShield.defenseValue;
     }
     public void getPlayerImage()
     {
@@ -131,8 +151,8 @@ player is in center of the screen and background is moving
             contactMonster(monsterIndex);
 
             //if collision is false player can move
-            if (!collisionOn && keyH.talkPressed == false && !attacking) {
-
+            if (!collisionOn && keyH.talkPressed == false && keyH.mousePressed == false) {
+                attacking = false;
                 switch (direction) {
                     case "up" -> worldY -= speed;
                     case "down" -> worldY += speed;
@@ -342,8 +362,7 @@ player is in center of the screen and background is moving
 
             }
         }
-        System.out.println("a"+attacking);
-        System.out.println(gp.keyH.mousePressed);
+
         if(invincible)
         {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3f));

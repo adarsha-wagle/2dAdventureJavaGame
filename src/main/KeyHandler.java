@@ -25,99 +25,132 @@ public class KeyHandler implements KeyListener, MouseListener {
         //TITLE STATE
         if(gp.gameState == gp.titleState)
         {
-            //0 for new game,1 for load game and 2 for quit
-            if (e.getKeyCode() == KeyEvent.VK_UP) {
-                gp.ui.commandNum--;
-                if(gp.ui.commandNum<0)
-                {
-                    gp.ui.commandNum=2;
-                }
 
-            } if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                gp.ui.commandNum++;
-            if(gp.ui.commandNum>2)
-            {
-                gp.ui.commandNum=0;
-            }
-            }
-            if(e.getKeyCode() == KeyEvent.VK_ENTER)
-            {
-                if(gp.ui.commandNum == 0)
-                {
-                    gp.gameState = gp.playState;
-                    gp.playMusic(0);
-                }
-                if(gp.ui.commandNum == 1)
-                {
-                    //Add Later:Load Game
-
-                }
-                if(gp.ui.commandNum == 2)
-                {
-                    System.exit(0);
-                }
-            }
+            titleState(e.getKeyCode());
         }
         //PLAY STATE
-        if(gp.gameState == gp.playState) {
-
-
-            if (e.getKeyCode() == KeyEvent.VK_W) {
-                upPressed = true;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_S) {
-                downPressed = true;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_A) {
-                leftPressed = true;
-            }
-            if (e.getKeyCode() == KeyEvent.VK_D) {
-                rightPressed = true;
-            }
-            //if player presses T key then talk to npc
-            if(e.getKeyCode()==KeyEvent.VK_T)
-            {
-                talkPressed = true;
-            }
-            if(e.getKeyCode()==KeyEvent.VK_ENTER)
-            {
-                enterPressed = true;
-            }
-            //pausing game
-            if (e.getKeyCode() == KeyEvent.VK_P) {
-//            gp.gameState = gp.gameState == gp.playState ? gp.pauseState:gp.playState;
-
-                    gp.gameState = gp.pauseState;
-
-            }
-
+        else if(gp.gameState == gp.playState) {
+            playState(e.getKeyCode());
         }
 
         //PAUSE STATE
         else if(gp.gameState == gp.pauseState)
         {
-            if (e.getKeyCode() == KeyEvent.VK_P) {
-                gp.gameState = gp.playState;
-            }
-
+            pauseState(e.getKeyCode());
         }
 
         //DIALOGUE STATE
-        if(gp.gameState == gp.dialogueState)
+       else  if(gp.gameState == gp.dialogueState)
         {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER)
-            {
-                gp.gameState = gp.playState;
-            }
-            if(e.getKeyCode()== KeyEvent.VK_T)
-            {
-                gp.npc[0].speak();
-                System.out.println("k pressed");
-            }
+            dialogueState(e.getKeyCode());
+        }
+        //CHARACTER STATE
+       else if(gp.gameState == gp.characterState)
+        {
 
+            characterState(e.getKeyCode());
         }
     }
 
+    public void titleState(int code)
+    {
+        //0 for new game,1 for load game and 2 for quit
+        if (code == KeyEvent.VK_UP) {
+            gp.ui.commandNum--;
+            if(gp.ui.commandNum<0)
+            {
+                gp.ui.commandNum=2;
+            }
+
+        } if (code == KeyEvent.VK_DOWN) {
+        gp.ui.commandNum++;
+        if(gp.ui.commandNum>2)
+        {
+            gp.ui.commandNum=0;
+        }
+    }
+        if(code == KeyEvent.VK_ENTER)
+        {
+            if(gp.ui.commandNum == 0)
+            {
+                gp.gameState = gp.playState;
+                gp.playMusic(0);
+            }
+            if(gp.ui.commandNum == 1)
+            {
+                //Add Later:Load Game
+
+            }
+            if(gp.ui.commandNum == 2)
+            {
+                System.exit(0);
+            }
+        }
+    }
+    public void playState(int code)
+    {
+        if (code == KeyEvent.VK_W) {
+            upPressed = true;
+        }
+        if (code == KeyEvent.VK_S) {
+            downPressed = true;
+        }
+        if (code == KeyEvent.VK_A) {
+            leftPressed = true;
+        }
+        if (code == KeyEvent.VK_D) {
+            rightPressed = true;
+        }
+        //if player presses T key then talk to npc
+        if(code==KeyEvent.VK_T)
+        {
+            talkPressed = true;
+        }
+        if(code==KeyEvent.VK_ENTER)
+        {
+            enterPressed = true;
+        }
+        //pausing game
+        if (code == KeyEvent.VK_P) {
+//            gp.gameState = gp.gameState == gp.playState ? gp.pauseState:gp.playState;
+
+            gp.gameState = gp.pauseState;
+
+        }
+        if(code == KeyEvent.VK_C)
+        {
+            System.out.println("pressesd c");
+            gp.gameState = gp.characterState;
+        }
+
+    }
+
+    public void pauseState(int code)
+    {
+
+        if (code == KeyEvent.VK_P) {
+            gp.gameState = gp.playState;
+        }
+    }
+    public void dialogueState(int code)
+    {
+        if (code == KeyEvent.VK_ENTER)
+        {
+            gp.gameState = gp.playState;
+        }
+        if(code== KeyEvent.VK_T)
+        {
+            gp.npc[0].speak();
+            System.out.println("k pressed");
+        }
+    }
+    public void characterState(int code)
+    {
+        if(code == KeyEvent.VK_C)
+        {
+            gp.gameState = gp.playState;
+        }
+    }
     @Override
     public void keyReleased(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_W)

@@ -42,7 +42,21 @@ public class Entity {
    //CHARACTER HEALTH
  public int maxLife;
  public int life;
+ public int level;
+ public int strength;
+ public int dexterity;
+ public int attack;
+ public int defense;
+ public int exp;
+ public int nextLevelExp;
+ public int coin;
+ public Entity currentWeapon;
+ public Entity currentShield;
 
+
+ //ITEM ATTRIBUTES
+ public int attackValue;
+ public int defenseValue;
 //SUPER OBJECT
  public BufferedImage image,image2,image3;//image 2 and 3 for heart
  public String name;
