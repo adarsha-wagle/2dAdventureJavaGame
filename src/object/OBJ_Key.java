@@ -15,6 +15,8 @@ public class OBJ_Key extends Entity {
 
         name = "Key";
         down1 = setupImage("objects/key",gp.TILE_SIZE,gp.TILE_SIZE);//scaling image
+        itemDescription = "!" + name + "/n Opens door";
+
 
     }
 }

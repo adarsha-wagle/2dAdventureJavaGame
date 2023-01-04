@@ -57,6 +57,7 @@ public class Entity {
  //ITEM ATTRIBUTES
  public int attackValue;
  public int defenseValue;
+ public String itemDescription = "";
 //SUPER OBJECT
  public BufferedImage image,image2,image3;//image 2 and 3 for heart
  public String name;
