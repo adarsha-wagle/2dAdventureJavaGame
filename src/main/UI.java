@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
 public class UI  {
@@ -17,8 +18,10 @@ public class UI  {
 
     Color color;
     public boolean messageOn = false;
-    public String message = "";
-    int messageCounter = 0;
+//    public String message = "";
+//    int messageCounter = 0;
+    ArrayList<String> message = new ArrayList<>();
+    ArrayList<Integer> messageCounter = new ArrayList<>();
     BufferedImage keyImage;
     public boolean gameFinished = false;
     public String currentDialogue = "";//npc dialogue : old man
@@ -54,11 +57,13 @@ public class UI  {
         heart_half = heart.image2;
         heart_blank = heart.image3;
     }
-    public void showMessage(String text,Color color)
+    public void addMessage(String text)
     {
-        this.color = color;
-        message = text;
-        messageOn = true;
+//        this.color = color;
+//        message = text;
+//        messageOn = true;
+        message.add(text);
+        messageCounter.add(0);
     }
     public void draw(Graphics2D g2) {
         this.g2 = g2;
@@ -79,6 +84,7 @@ public class UI  {
         {
             //do play stuff later
             drawPlayerLife();
+            drawMessage();
         }
         //PAUSE STATE
         if(gp.gameState == gp.pauseState)
@@ -96,6 +102,31 @@ public class UI  {
             System.out.println("c");
             drawCharacterScreen();
         }
+    }
+    public void drawMessage()
+    {
+        int messageX = gp.TILE_SIZE ;
+        int messageY = gp.TILE_SIZE*4;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,32F));
+        for (int i = 0;i<message.size();i++)
+        {
+            if(message.get(i)!=null)
+            {
+                g2.setColor(Color.black);
+                g2.drawString(message.get(i),messageX+2,messageY+2);
+                g2.setColor(Color.white);
+                g2.drawString(message.get(i),messageX,messageY);
+                int counter = messageCounter.get(i)+1;//messageCounter
+                messageCounter.set(i,counter);//set the counter to the array
+                messageY += 50;
+                if(messageCounter.get(i)>180)
+                {
+                    message.remove(i);
+                    messageCounter.remove(i);
+                }
+            }
+        }
+
     }
     public void drawCharacterScreen()
     {
