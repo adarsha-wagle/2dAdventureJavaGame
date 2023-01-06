@@ -34,7 +34,7 @@ public class Entity {
     int dyingCounter = 0;
     int hpBarCounter = 0;
  public int spriteCounter = 0;
-    public int type;//0 = player,1= npc,2 = monster
+
     //FOR MANAGING DIALOGUES
     String dialogue[] = new String[20];//dialogue for npc's
     public int dialogueIndex = 0;//responsible for rendering multiple dialogues
@@ -58,6 +58,16 @@ public class Entity {
  public int attackValue;
  public int defenseValue;
  public String itemDescription = "";
+
+ //TYPE
+ public int type;//0 = player,1= npc,2 = monster
+ public final int type_player = 0;
+ public final int type_npc = 1;
+ public final int type_monster = 2;
+ public final int type_sword = 3;
+ public final int type_axe = 4;
+ public final int type_shield = 5;
+ public final int type_consumable = 6;
 //SUPER OBJECT
  public BufferedImage image,image2,image3;//image 2 and 3 for heart
  public String name;
@@ -70,6 +80,7 @@ public class Entity {
 
   }
   public void damageReaction(){}
+ public void use(Entity entity){}
   public void speak(){
    if(dialogue[dialogueIndex]==null)//if dialogue reaches the maximum index then reset index to zero
    {
@@ -105,7 +116,7 @@ public class Entity {
    gp.cChecker.checkEntity(this,gp.npc);
    gp.cChecker.checkEntity(this,gp.monster);
    boolean contactPlayer = gp.cChecker.checkPlayer(this);
-   if(this.type == 2 && contactPlayer)
+   if(this.type == type_monster && contactPlayer)
    {
     gp.playSE(6);
     if(!gp.player.invincible)

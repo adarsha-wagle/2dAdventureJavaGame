@@ -177,6 +177,10 @@ public class KeyHandler implements KeyListener, MouseListener {
                 gp.ui.slotCol++;
             }
         }
+        if(code == KeyEvent.VK_ENTER)
+        {
+            gp.player.selectItem();
+        }
     }
     @Override
     public void keyReleased(KeyEvent e) {

@@ -50,8 +50,9 @@ player is in center of the screen and background is moving
         solidArea.height = 28;
 
         //Change this number if you want to change attacking range
-        attackArea.width = 36;
-        attackArea.height = 36;
+//        attackArea.width = 36;
+//        attackArea.height = 36;
+
         setDefaultValues();
         getPlayerImage();
         getPlayerAttackImage();
@@ -62,8 +63,8 @@ player is in center of the screen and background is moving
         //player position in world map
 //        worldX = gp.TILE_SIZE * 23;//1104px 23 is arbitrary no. use for initial position
 //        worldY = gp.TILE_SIZE * 21;//1008px similarly 21 is arbitrary no.
-        worldX = gp.TILE_SIZE*10;
-        worldY = gp.TILE_SIZE*9;
+        worldX = gp.TILE_SIZE*35;
+        worldY = gp.TILE_SIZE*21;
         speed = 4;
         direction = "left";
 
@@ -90,6 +91,7 @@ player is in center of the screen and background is moving
     }
     public int getAttack()
     {
+        attackArea = currentWeapon.attackArea;
         return attack = strength * currentWeapon.attackValue;
     }
     public int getDefense()
@@ -112,14 +114,29 @@ player is in center of the screen and background is moving
     }
     public void getPlayerAttackImage()
     {
-        attackUp1 = setupImage("player/boy_attack_up_1",gp.TILE_SIZE,gp.TILE_SIZE*2);
-        attackUp2 = setupImage("player/boy_attack_up_2",gp.TILE_SIZE,gp.TILE_SIZE*2);
-        attackDown1 = setupImage("player/boy_attack_down_1",gp.TILE_SIZE,gp.TILE_SIZE*2);
-        attackDown2= setupImage("player/boy_attack_down_2",gp.TILE_SIZE,gp.TILE_SIZE*2);
-        attackLeft1 = setupImage("player/boy_attack_left_1",gp.TILE_SIZE*2,gp.TILE_SIZE);
-        attackLeft2 = setupImage("player/boy_attack_left_2",gp.TILE_SIZE*2,gp.TILE_SIZE);
-        attackRight1 = setupImage("player/boy_attack_right_1",gp.TILE_SIZE*2,gp.TILE_SIZE);
-        attackRight2 = setupImage("player/boy_attack_right_2",gp.TILE_SIZE*2,gp.TILE_SIZE);
+        if(currentWeapon.type == type_sword) {
+
+
+            attackUp1 = setupImage("player/boy_attack_up_1", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackUp2 = setupImage("player/boy_attack_up_2", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackDown1 = setupImage("player/boy_attack_down_1", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackDown2 = setupImage("player/boy_attack_down_2", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackLeft1 = setupImage("player/boy_attack_left_1", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+            attackLeft2 = setupImage("player/boy_attack_left_2", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+            attackRight1 = setupImage("player/boy_attack_right_1", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+            attackRight2 = setupImage("player/boy_attack_right_2", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+        }
+        if(currentWeapon.type == type_axe) {
+            attackUp1 = setupImage("player/boy_axe_up_1", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackUp2 = setupImage("player/boy_axe_up_2", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackDown1 = setupImage("player/boy_axe_down_1", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackDown2 = setupImage("player/boy_axe_down_2", gp.TILE_SIZE, gp.TILE_SIZE * 2);
+            attackLeft1 = setupImage("player/boy_axe_left_1", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+            attackLeft2 = setupImage("player/boy_axe_left_2", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+            attackRight1 = setupImage("player/boy_axe_right_1", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+            attackRight2 = setupImage("player/boy_axe_right_2", gp.TILE_SIZE * 2, gp.TILE_SIZE);
+        }
+
     }
 
     public void update()//responsible for changing player position
@@ -165,7 +182,7 @@ player is in center of the screen and background is moving
             contactMonster(monsterIndex);
 
             //if collision is false player can move
-            if (!collisionOn && keyH.talkPressed == false && keyH.mousePressed == false) {
+            if (!collisionOn && !keyH.talkPressed && !keyH.mousePressed) {
                 attacking = false;
                 switch (direction) {
                     case "up" -> worldY -= speed;
@@ -220,13 +237,12 @@ player is in center of the screen and background is moving
             int solidAreaWidth = solidArea.width;
             int solidAreaHeight = solidArea.height;
 
-            //Adjust player's worldX/Y for thie attack Area
-            switch(direction)
-            {
-                case "up" :worldY -= attackArea.height ;break;
-                case "down":worldY+= attackArea.height;break;
-                case "left":worldX-= attackArea.width;break;
-                case "right":worldX+= attackArea.width;break;
+            //Adjust player's worldX/Y for this attack Area
+            switch (direction) {
+                case "up" -> worldY -= attackArea.height;
+                case "down" -> worldY += attackArea.height;
+                case "left" -> worldX -= attackArea.width;
+                case "right" -> worldX += attackArea.width;
             }
             //attackArea becomes solidArea
             solidArea.width = attackArea.width;
@@ -237,6 +253,7 @@ player is in center of the screen and background is moving
             worldX = currentWorldX;
             worldY = currentWorldY;
             solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
             solidArea.height = solidAreaHeight;
         }
         if(spriteCounter>20)
@@ -252,7 +269,19 @@ player is in center of the screen and background is moving
     {
         if(i!=999)//if index is 999 then we have not touched anything
         {
+            String text;
+            if(inventory.size()!= maxInventorySize)
+            {
+                inventory.add(gp.obj[i]);
+                gp.playSE(1);
+                text = "Got a " + gp.obj[i].name + "!";
 
+            }
+            else {
+                text = "You cannot carry any more!";
+            }
+            gp.ui.addMessage(text);
+            gp.obj[i] = null;
 
         }
     }
@@ -280,7 +309,7 @@ player is in center of the screen and background is moving
     {
         if(i!=999)//player touches monster
         {
-            if(invincible == false)
+            if(!invincible)
             {
                 gp.playSE(6);
                 int damage = gp.monster[i].attack-defense;
@@ -299,7 +328,7 @@ player is in center of the screen and background is moving
         if (i!=999)
         {
 //            System.out.println("Hit");
-            if(gp.monster[i].invincible == false)
+            if(!gp.monster[i].invincible)
             {
                 gp.playSE(8);
                 int damage = attack-gp.monster[i].defense;
@@ -335,11 +364,36 @@ player is in center of the screen and background is moving
             maxLife+=2;
             strength++;
             dexterity++;
-            attack = getAttack();//player strength and dexterity has been increased so we need to recalculated
+            attack = getAttack();//player strength and dexterity has been increased so we need to recalculate
             defense = getDefense();
             gp.playSE(9);
             gp.gameState = gp.dialogueState;
             gp.ui.currentDialogue = "You are level "+ level + "now!\n"+"You feel stronger";
+        }
+    }
+    public void selectItem()
+    {
+        int itemIndex = gp.ui.getItemIndexOnSlot();
+        if(itemIndex<inventory.size())
+        {
+            Entity selectedItem = inventory.get(itemIndex);
+            if(selectedItem.type == type_sword || selectedItem.type == type_axe)
+            {
+                currentWeapon = selectedItem;
+                attack = getAttack();
+                getPlayerAttackImage();
+            }
+            if(selectedItem.type == type_shield)
+            {
+                currentShield = selectedItem;
+                defense = getDefense();
+
+            }
+            if(selectedItem.type == type_consumable)
+            {
+                selectedItem.use(this);
+                inventory.remove(itemIndex);
+            }
         }
     }
     public void draw(Graphics2D g2d)

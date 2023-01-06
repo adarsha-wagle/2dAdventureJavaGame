@@ -2,10 +2,7 @@ package main;
 
 import entity.NPC_OldMan;
 import monster.MON_GreenSlime;
-import object.OBJ_Boots;
-import object.OBJ_Chest;
-import object.OBJ_Door;
-import object.OBJ_Key;
+import object.*;
 
 public class AssetSetter {
     GamePanel gp;
@@ -15,11 +12,34 @@ public class AssetSetter {
     }
     public void setObject()
     {
-//        gp.obj[0] = new OBJ_Door(gp);
-//        gp.obj[0].worldX = gp.TILE_SIZE*21;
-//        gp.obj[0].worldY = gp.TILE_SIZE*22;
-
-
+        int i = 0;
+        gp.obj[i] = new OBJ_Key(gp);
+        gp.obj[i].worldX = gp.TILE_SIZE*21;
+        gp.obj[i].worldY = gp.TILE_SIZE*22;
+        i++;
+        gp.obj[i] = new OBJ_Key(gp);
+        gp.obj[i].worldX = gp.TILE_SIZE*22;
+        gp.obj[i].worldY = gp.TILE_SIZE*22;
+        i++;
+        gp.obj[i] = new OBJ_Axe(gp);
+        gp.obj[i].worldX = gp.TILE_SIZE*33;
+        gp.obj[i].worldY = gp.TILE_SIZE*21;
+        i++;
+        gp.obj[i] = new OBJ_Shield_Blue(gp);
+        gp.obj[i].worldX = gp.TILE_SIZE*36;
+        gp.obj[i].worldY = gp.TILE_SIZE*21;
+        i++;
+        gp.obj[i] = new OBJ_Potion_Red(gp);
+        gp.obj[i].worldX = gp.TILE_SIZE*38;
+        gp.obj[i].worldY = gp.TILE_SIZE*21;
+        i++;
+        gp.obj[i] = new OBJ_Potion_Red(gp);
+        gp.obj[i].worldX = gp.TILE_SIZE*30;
+        gp.obj[i].worldY = gp.TILE_SIZE*21;
+        i++;
+        gp.obj[i] = new OBJ_Potion_Red(gp);
+        gp.obj[i].worldX = gp.TILE_SIZE*32;
+        gp.obj[i].worldY = gp.TILE_SIZE*21;
     }
     public void setNPC()
     {

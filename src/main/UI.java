@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
+
 
 public class UI  {
     GamePanel gp;
@@ -111,8 +111,8 @@ public class UI  {
     {
         int frameX = gp.TILE_SIZE * 9;
         int frameY= gp.TILE_SIZE;
-        int frameWidth = gp.TILE_SIZE * 6;
-        int frameHeight = gp.TILE_SIZE *5;
+        int frameWidth = (gp.TILE_SIZE * 6)+12;
+        int frameHeight = (gp.TILE_SIZE *5)+12;
         drawSubWindow(frameX,frameY,frameWidth,frameHeight);
 
         //SLOT
@@ -120,18 +120,24 @@ public class UI  {
         final int slotYStart = frameY  + 20;
         int slotX = slotXStart;
         int slotY = slotYStart;
-        int slotSize = gp.TILE_SIZE +3;
+        int slotSize = gp.TILE_SIZE +5;
 
-        //DRAW PLAYERS'S ITEMS
+        //DRAW PLAYER'S ITEMS
         for(int i = 0;i<gp.player.inventory.size();i++)
         {
+            //EQUIP CURSOR : highlighting current equipment
+            if(gp.player.inventory.get(i) == gp.player.currentWeapon || gp.player.inventory.get(i)==gp.player.currentShield )
+            {
+                g2.setColor(new Color(240,190,90));
+                g2.fillRoundRect(slotX,slotY,gp.TILE_SIZE+2,gp.TILE_SIZE,10,10);
+            }
             g2.drawImage(gp.player.inventory.get(i).down1,slotX,slotY,null);
-            slotX+=gp.TILE_SIZE;
+            slotX+=gp.TILE_SIZE+5;
             //if index row1 limits then we shift to new row i.e.2
             if(i == 4 || i == 9 || i == 14)
             {
-                slotX = slotSize;
                 slotY += slotSize;
+                slotX = slotXStart;
             }
         }
         //CURSOR
