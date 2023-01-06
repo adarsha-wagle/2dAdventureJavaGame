@@ -2,6 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.OBJ_Fireball;
 import object.OBJ_Key;
 import object.OBJ_Shield_Wood;
 import object.OBJ_Sword_Normal;
@@ -79,6 +80,7 @@ player is in center of the screen and background is moving
         coin = 0;
         currentWeapon = new OBJ_Sword_Normal(gp);
         currentShield = new OBJ_Shield_Wood(gp);
+        projectile = new OBJ_Fireball(gp);
         attack  = getAttack();//the total attack value is decided by strength and weapon
         defense = getDefense();//the total defense value is decided by dexterity and shield
     }
@@ -146,7 +148,7 @@ player is in center of the screen and background is moving
             handleAttack();
         }
 
-        if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed||keyH.talkPressed||keyH.mousePressed) {
+      else if(keyH.upPressed||keyH.downPressed||keyH.leftPressed||keyH.rightPressed||keyH.talkPressed||keyH.mousePressed) {
             if (keyH.upPressed) {
 
                 direction = "up";
@@ -201,6 +203,7 @@ player is in center of the screen and background is moving
                 spriteCounter = 0;
             }
         }
+
         else {
 //            direction = "stand";//TODO disable if player has weapon and enable if player doesnot have weapon
             standCounter++;
@@ -210,6 +213,15 @@ player is in center of the screen and background is moving
                 standCounter = 0;
             }
         }
+        //you cannot shoot if previous projectile is still alive
+        if(gp.keyH.shotKeyPressed && projectile.alive == false && shotAvailableCounter == 30)
+        {
+            projectile.set(worldX,worldY,direction,true,this);
+            //ADD IT TO THE LIST
+            gp.projectileList.add(projectile);
+            shotAvailableCounter = 0;
+            gp.playSE(11);
+        }
         if(invincible)
         {
             invicibleCounter++;
@@ -218,6 +230,10 @@ player is in center of the screen and background is moving
                 invincible = false;
                 invicibleCounter=0;
             }
+        }
+        if(shotAvailableCounter < 30)
+        {
+            shotAvailableCounter++;
         }
     }
     public void handleAttack()//attacking
@@ -249,7 +265,7 @@ player is in center of the screen and background is moving
             solidArea.height = attackArea.height;
             //Check monster collision with the updated worldX,worldY and solidArea
             int monsterIndex = gp.cChecker.checkEntity(this,gp.monster);
-            damageMonster(monsterIndex);
+            damageMonster(monsterIndex,attack);
             worldX = currentWorldX;
             worldY = currentWorldY;
             solidArea.width = solidAreaWidth;
@@ -309,7 +325,7 @@ player is in center of the screen and background is moving
     {
         if(i!=999)//player touches monster
         {
-            if(!invincible)
+            if(!invincible && !gp.monster[i].dying)
             {
                 gp.playSE(6);
                 int damage = gp.monster[i].attack-defense;
@@ -323,7 +339,7 @@ player is in center of the screen and background is moving
 
         }
     }
-    public void damageMonster(int i )
+    public void damageMonster(int i,int attack )
     {
         if (i!=999)
         {

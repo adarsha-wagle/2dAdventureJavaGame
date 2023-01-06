@@ -6,7 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class KeyHandler implements KeyListener, MouseListener {
-    public boolean upPressed,downPressed,leftPressed,rightPressed,talkPressed;
+    public boolean upPressed,downPressed,leftPressed,rightPressed,talkPressed,shotKeyPressed;
     public boolean enterPressed;//for healing
 
     public boolean mousePressed;
@@ -122,6 +122,10 @@ public class KeyHandler implements KeyListener, MouseListener {
             System.out.println("pressesd c");
             gp.gameState = gp.characterState;
         }
+        if(code == KeyEvent.VK_F)
+        {
+            shotKeyPressed = true;
+        }
 
     }
 
@@ -196,6 +200,9 @@ public class KeyHandler implements KeyListener, MouseListener {
         }if(e.getKeyCode() == KeyEvent.VK_D)
         {
             rightPressed = false;
+        }if(e.getKeyCode() == KeyEvent.VK_F)
+        {
+            shotKeyPressed = false;
         }
 
     }

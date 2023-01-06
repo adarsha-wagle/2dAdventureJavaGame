@@ -22,8 +22,9 @@ public class MON_GreenSlime extends Entity {
 
         //setting solid area of slime
         solidArea.x = 3;
-        solidArea.y = 10;solidArea.width = 42;
-        solidArea.height = 30;
+        solidArea.y = 10;
+        solidArea.width = 36;//default 42
+        solidArea.height = 24;//default 30
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         getImage();
@@ -59,6 +60,7 @@ public class MON_GreenSlime extends Entity {
             }
             actionLockCounter = 0;
         }
+
     }
     public void damageReaction()
     {
