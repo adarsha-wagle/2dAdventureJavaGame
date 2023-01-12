@@ -2,10 +2,7 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
-import object.OBJ_Fireball;
-import object.OBJ_Key;
-import object.OBJ_Shield_Wood;
-import object.OBJ_Sword_Normal;
+import object.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -73,6 +70,9 @@ player is in center of the screen and background is moving
         level = 1;
         maxLife = 6;//1 life = half heart
         life = maxLife;//player current life
+        maxMana = 4;
+        mana = maxMana;
+//        ammo = 10;//TODO Ammo
         strength = 1;//the more strength he has, the more damage he gives
         dexterity = 1;//the more dexterity he has, the less damage he receives.
         exp = 0;
@@ -81,6 +81,7 @@ player is in center of the screen and background is moving
         currentWeapon = new OBJ_Sword_Normal(gp);
         currentShield = new OBJ_Shield_Wood(gp);
         projectile = new OBJ_Fireball(gp);
+//        projectile = new OBJ_Rock(gp);//TODO Ammo
         attack  = getAttack();//the total attack value is decided by strength and weapon
         defense = getDefense();//the total defense value is decided by dexterity and shield
     }
@@ -214,10 +215,12 @@ player is in center of the screen and background is moving
             }
         }
         //you cannot shoot if previous projectile is still alive
-        if(gp.keyH.shotKeyPressed && projectile.alive == false && shotAvailableCounter == 30)
+        if(gp.keyH.shotKeyPressed && projectile.alive == false && shotAvailableCounter == 30 && projectile.haveResource(this))
         {
             projectile.set(worldX,worldY,direction,true,this);
             //ADD IT TO THE LIST
+            //SUBTRACT THE COST(Mana,Ammo)
+            projectile.subtractResource(this);
             gp.projectileList.add(projectile);
             shotAvailableCounter = 0;
             gp.playSE(11);

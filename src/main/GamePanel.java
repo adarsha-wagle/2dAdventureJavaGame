@@ -216,10 +216,10 @@ public class GamePanel extends JPanel implements Runnable{
             }
             for (int i = 0;i<projectileList.size();i++)
             {
-                System.out.println(projectileList.get(i));
+//                System.out.println(projectileList.get(i));
                 if(projectileList.get(i)!= null)
                 {
-                    System.out.println(projectileList.get(i));
+//                    System.out.println(projectileList.get(i));
                     entityList.add(projectileList.get(i));//projectile on the list will be render
                 }
             }
