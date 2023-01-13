@@ -62,6 +62,7 @@ public Entity user;
 
 
  //ITEM ATTRIBUTES
+ public int value;//for coin,potion
  public int attackValue;
  public int defenseValue;
  public String itemDescription = "";
@@ -77,6 +78,7 @@ public Entity user;
  public final int type_axe = 4;
  public final int type_shield = 5;
  public final int type_consumable = 6;
+ public final int type_pickupOnly = 7;
 //SUPER OBJECT
  public BufferedImage image,image2,image3;//image 2 and 3 for heart
  public String name;
@@ -90,6 +92,19 @@ public Entity user;
   }
   public void damageReaction(){}
  public void use(Entity entity){}
+ public void checkDrop(){}
+ public void dropItem(Entity droppedItem){
+   for (int i = 0;i<gp.obj.length;i++)
+   {
+    if(gp.obj[i] == null)
+    {
+     gp.obj[i] = droppedItem;
+     gp.obj[i].worldX = worldX;//the dead monster's worldX
+     gp.obj[i].worldY = worldY;
+     break;
+    }
+   }
+ }
   public void speak(){
    if(dialogue[dialogueIndex]==null)//if dialogue reaches the maximum index then reset index to zero
    {

@@ -238,6 +238,14 @@ player is in center of the screen and background is moving
         {
             shotAvailableCounter++;
         }
+        if(life > maxLife)
+        {
+            life = maxLife;
+        }
+        if(mana>maxMana)
+        {
+            mana = maxMana;
+        }
     }
     public void handleAttack()//attacking
     {
@@ -288,6 +296,15 @@ player is in center of the screen and background is moving
     {
         if(i!=999)//if index is 999 then we have not touched anything
         {
+            //PICKUP ONLY ITEMS
+            if(gp.obj[i].type == type_pickupOnly )
+            {
+                gp.obj[i].use(this);//pick up object
+                gp.obj[i] = null;//and delete it
+            }
+            //INVENTORY ITEMS
+            else
+            {
             String text;
             if(inventory.size()!= maxInventorySize)
             {
@@ -301,6 +318,7 @@ player is in center of the screen and background is moving
             }
             gp.ui.addMessage(text);
             gp.obj[i] = null;
+            }
 
         }
     }
