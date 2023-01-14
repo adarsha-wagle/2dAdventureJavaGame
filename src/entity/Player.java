@@ -183,7 +183,8 @@ player is in center of the screen and background is moving
             //CHECK MONSTER COLLISION
             int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
             contactMonster(monsterIndex);
-
+            //CHECK INTERACTIVE TILE COLLISION
+            gp.cChecker.checkEntity(this,gp.iTile);
             //if collision is false player can move
             if (!collisionOn && !keyH.talkPressed && !keyH.mousePressed) {
                 attacking = false;
@@ -227,11 +228,11 @@ player is in center of the screen and background is moving
         }
         if(invincible)
         {
-            invicibleCounter++;
-            if(invicibleCounter>60)
+            invincibleCounter++;
+            if(invincibleCounter >60)
             {
                 invincible = false;
-                invicibleCounter=0;
+                invincibleCounter =0;
             }
         }
         if(shotAvailableCounter < 30)
@@ -277,6 +278,9 @@ player is in center of the screen and background is moving
             //Check monster collision with the updated worldX,worldY and solidArea
             int monsterIndex = gp.cChecker.checkEntity(this,gp.monster);
             damageMonster(monsterIndex,attack);
+
+            int iTileIndex = gp.cChecker.checkEntity(this,gp.iTile);
+            damageInteractiveTile(iTileIndex);
             worldX = currentWorldX;
             worldY = currentWorldY;
             solidArea.width = solidAreaWidth;
@@ -391,6 +395,19 @@ player is in center of the screen and background is moving
 //        {
 //            System.out.println("miss");
 //        }
+    }
+    public void damageInteractiveTile(int i)
+    {
+        if(i!=999 && gp.iTile[i].destructible && gp.iTile[i].isCorrectItem(this) && gp.iTile[i].invincible == false)
+        {
+            gp.iTile[i].playSE();
+            gp.iTile[i].life--;
+            gp.iTile[i].invincible = true;
+            if(gp.iTile[i].life == 0)
+            {
+            gp.iTile[i] = gp.iTile[i].getDestroyedForm();
+            }
+        }
     }
     public void checkLevelUp()
     {

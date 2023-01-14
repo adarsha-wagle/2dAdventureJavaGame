@@ -30,7 +30,7 @@ public class Entity {
     public boolean dying = false;
     boolean hpBarOn = false;
     //COUNTER
-    public int invicibleCounter = 0;
+    public int invincibleCounter = 0;
     int dyingCounter = 0;
     int hpBarCounter = 0;
     public int shotAvailableCounter = 0;
@@ -139,6 +139,7 @@ public Entity user;
    gp.cChecker.checkObject(this,false);
    gp.cChecker.checkEntity(this,gp.npc);
    gp.cChecker.checkEntity(this,gp.monster);
+   gp.cChecker.checkEntity(this,gp.iTile);
    boolean contactPlayer = gp.cChecker.checkPlayer(this);
    if(this.type == type_monster && contactPlayer)
    {
@@ -162,11 +163,11 @@ public Entity user;
         }
    if(invincible)
    {
-    invicibleCounter++;
-    if(invicibleCounter>40)
+    invincibleCounter++;
+    if(invincibleCounter >40)
     {
      invincible = false;
-     invicibleCounter=0;
+     invincibleCounter =0;
     }
    }
    if(shotAvailableCounter < 30)
