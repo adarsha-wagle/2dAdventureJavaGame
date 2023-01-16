@@ -285,7 +285,6 @@ player is in center of the screen and background is moving
             worldY = currentWorldY;
             solidArea.width = solidAreaWidth;
             solidArea.height = solidAreaHeight;
-            solidArea.height = solidAreaHeight;
         }
         if(spriteCounter>20)
         {
@@ -403,6 +402,8 @@ player is in center of the screen and background is moving
             gp.iTile[i].playSE();
             gp.iTile[i].life--;
             gp.iTile[i].invincible = true;
+            //GENERATE PARTICLES
+            generateParticle(gp.iTile[i],gp.iTile[i]);
             if(gp.iTile[i].life == 0)
             {
             gp.iTile[i] = gp.iTile[i].getDestroyedForm();

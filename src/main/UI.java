@@ -340,10 +340,9 @@ public class UI  {
         x = (gp.TILE_SIZE/2)-5;
         y =(int) (gp.TILE_SIZE*1.5);
         i = 0;
-        System.out.println("i"+i);
-        System.out.println("ma"+gp.player.maxMana);
+
         while(i<gp.player.maxMana)
-        {        System.out.println("he");
+        {
 
             g2.drawImage(crystal_blank,x,y,null);
             i++;

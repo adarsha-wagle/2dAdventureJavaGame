@@ -43,6 +43,8 @@ public class Projectile extends Entity{
             if(monsterIndex!=999)
             {
                 gp.player.damageMonster(monsterIndex,attack);
+                generateParticle(user.projectile,gp.monster[monsterIndex]);
+
                 alive = false;//the projectile dies
             }
         }
@@ -51,6 +53,7 @@ public class Projectile extends Entity{
             if(gp.player.invincible == false && contactPlayer == true)
             {
                 damagePlayer(attack);
+                generateParticle(user.projectile,gp.player);
                 alive  = false;
             }
         }

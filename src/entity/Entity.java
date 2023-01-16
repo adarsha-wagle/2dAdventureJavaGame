@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
+import java.util.Random;
 
 public class Entity {
  GamePanel gp;
@@ -132,6 +133,47 @@ public Entity user;
    }
 
   }
+  public Color getParticleColor()
+ {
+  Color color = null;
+  return color;
+ }
+ public int getParticleSize()
+ {
+  int size = 0;//6px
+  return size;
+ }
+ public int getParticleSpeed()
+ {
+  int speed =0;
+  return speed;
+ }
+ //HOW LONG THE PARTICLE GONNA LAST
+ public int getParticleMaxLife()
+ {
+  int maxLife = 0;
+  return maxLife;
+ }
+
+ public void generateParticle(Entity generator, Entity target)
+ {
+    Color color = generator.getParticleColor();
+    int size = generator.getParticleSize();
+    int speed = generator.getParticleSpeed();
+    int maxLife = generator.getParticleMaxLife();
+    Random rand = new Random();
+   int xd = rand.nextInt(3);//0-2 inclusive
+//   int yd = rand.nextInt(3);
+
+    Particle p1 = new Particle(gp,target,color,size,speed, maxLife,-xd,-1);
+    Particle p2 = new Particle(gp,target,color,size,speed, maxLife,xd,-1);
+    Particle p3 = new Particle(gp,target,color,size,speed, maxLife,-xd,1);
+    Particle p4 = new Particle(gp,target,color,size,speed, maxLife,xd,1);
+    gp.particleList.add(p1);
+    gp.particleList.add(p2);
+    gp.particleList.add(p3);
+    gp.particleList.add(p4);
+ }
   public void update(){
    setAction();
    collisionOn = false;
