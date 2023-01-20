@@ -525,9 +525,10 @@ player is in center of the screen and background is moving
         // player does not change
         //RESET
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
+
         //PLAYER COLLISION CHECKER
-        g2d.setColor(Color.red);
-        g2d.drawRect(screenX+solidArea.x,screenY+solidArea.y,solidArea.width,solidArea.height);
+//        g2d.setColor(Color.red);
+//        g2d.drawRect(screenX+solidArea.x,screenY+solidArea.y,solidArea.width,solidArea.height);
 
         //DEBUG
 //        g2d.setFont(new Font("Arial",Font.PLAIN,26));

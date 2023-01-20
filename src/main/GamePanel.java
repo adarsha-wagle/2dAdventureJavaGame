@@ -46,7 +46,7 @@ public class GamePanel extends JPanel implements Runnable{
     Graphics2D g2d;
 
 
-
+    public boolean fullScreenOn = false;
 
     int FPS = 60;
 
@@ -90,6 +90,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int pauseState = 2;
     public final int dialogueState = 3;
     public final int characterState = 4;
+    public final int optionState = 5;
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
