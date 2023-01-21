@@ -59,6 +59,9 @@ public class GamePanel extends JPanel implements Runnable{
     //SETTING SOUND EFFECT AND MUSIC
     Sound music  = new Sound();
     Sound soundEff = new Sound();
+
+    //CONFIG FILE
+    Config config = new Config(this);
     Thread gameThread;
 
     //COLLISION CHECKER FOR PLAYER AND TILES
@@ -111,7 +114,10 @@ public class GamePanel extends JPanel implements Runnable{
         gameState = titleState;
         tempScreen = new BufferedImage(SCREEN_WIDTH,SCREEN_HEIGHT,BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D) tempScreen.getGraphics();
-//        setFullScreen();
+        if(fullScreenOn)
+        {
+            setFullScreen();
+        }
     }
     public void setFullScreen()
     {
