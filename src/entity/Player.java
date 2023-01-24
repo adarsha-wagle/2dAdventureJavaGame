@@ -85,8 +85,22 @@ player is in center of the screen and background is moving
         attack  = getAttack();//the total attack value is decided by strength and weapon
         defense = getDefense();//the total defense value is decided by dexterity and shield
     }
+    public void setDefaultPosition()
+    {
+        worldX = gp.TILE_SIZE*35;
+        worldY = gp.TILE_SIZE*21;
+        direction = "down";
+    }
+    public void restoreLifeAndMana()
+    {
+        life = maxLife;
+        mana = maxMana;
+        invincible = false;
+
+    }
     public void setItems()
     {
+        inventory.clear();//clearing player's all the extra item and restoring default item when retrying
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gp));
@@ -246,6 +260,11 @@ player is in center of the screen and background is moving
         if(mana>maxMana)
         {
             mana = maxMana;
+        }
+        if(life <= 0)
+        {
+            gp.gameState = gp.gameOverState;
+            gp.playSE(13);
         }
     }
     public void handleAttack()//attacking

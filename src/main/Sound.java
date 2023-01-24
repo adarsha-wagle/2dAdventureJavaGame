@@ -35,6 +35,8 @@ public class Sound {
         soundURL[11] = getClass().getResource("/sound/burning.wav");
 
         soundURL[12] = getClass().getResource("/sound/cuttree.wav");
+
+        soundURL[13] = getClass().getResource("/sound/gameover.wav");
     }
     public void setFile( int i)
     {
